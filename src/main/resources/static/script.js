@@ -1,15 +1,24 @@
-// ============================================
-// API Configuration - FOR RAILWAY (FIXED)
-// ============================================
-// Gamitin ang current hostname para sa API calls
-const API_BASE_URL = window.location.protocol + '//' + window.location.hostname + '/api';
+// ==================== API CONFIGURATION ====================
+// Detect if running on ngrok, localhost, or railway
+const isNgrok = window.location.hostname.includes('ngrok-free.dev');
+const isRailway = window.location.hostname.includes('up.railway.app');
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-console.log('🔧 API_BASE_URL:', API_BASE_URL);
-console.log('🌐 Current Host:', window.location.hostname);
+let API_BASE_URL;
+
+if (isRailway) {
+    API_BASE_URL = 'https://' + window.location.hostname + '/api';
+} else if (isLocalhost) {
+    API_BASE_URL = 'http://localhost:8080/api';
+} else if (isNgrok) {
+    API_BASE_URL = '/api';
+} else {
+    API_BASE_URL = '/api';
+}
 
 console.log('🔧 API_BASE_URL:', API_BASE_URL);
 console.log('🌐 Host:', window.location.hostname);
-console.log('📡 Mode:', isNgrok ? 'Ngrok (Public)' : 'Local');
+console.log('📡 Mode:', isRailway ? 'Railway (Production)' : (isLocalhost ? 'Local' : (isNgrok ? 'Ngrok' : 'Unknown')));
 
 // ==================== CONFIG ====================
 const CONFIG = {
@@ -31,7 +40,7 @@ const ENDPOINTS = {
     VERIFY_OTP: `${CONFIG.API_BASE_URL}/auth/verify-otp`,
     RESEND_OTP: `${CONFIG.API_BASE_URL}/auth/resend-otp`,
     CHECK_EMAIL: `${CONFIG.API_BASE_URL}/auth/check-email`,
-    SESSION_CHECK: `${CONFIG.API_BASE_URL}/auth/user/check-session`
+    SESSION_CHECK: `${CONFIG.API_BASE_URL}/auth/session-check`
 };
 
 // ==================== DOM ELEMENTS ====================
@@ -443,7 +452,6 @@ const otpHandler = {
 
 // ==================== API CALLS ====================
 const api = {
-    // FIXED: Use JSON format instead of form-urlencoded
     login: async (email, password) => {
         const response = await fetch(ENDPOINTS.LOGIN, {
             method: 'POST',
@@ -521,8 +529,11 @@ function redirectToDashboard() {
 
 // ==================== EVENT HANDLERS ====================
 const handlers = {
+    // ⭐⭐⭐ FIXED LOGIN HANDLER - WITH e.preventDefault() ⭐⭐⭐
     login: async (e) => {
+        // ✅ ITO ANG PINAKAIMPORTANTE - PINIPIGIL ANG PAGE REFRESH AT 405 ERROR
         e.preventDefault();
+        e.stopPropagation();
         
         if (!elements.loginEmail || !elements.loginPassword) return;
         
@@ -551,10 +562,12 @@ const handlers = {
         }
         
         const submitBtn = e.target.querySelector('.submit-btn');
-        const originalBtnText = submitBtn.innerHTML;
+        const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Login';
         
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="btn-text">Logging in...</span> <i class="fas fa-spinner fa-spin"></i>';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="btn-text">Logging in...</span> <i class="fas fa-spinner fa-spin"></i>';
+        }
         utils.showToast('Logging in...', 'info');
         
         try {
@@ -562,22 +575,22 @@ const handlers = {
             
             console.log('🔍 LOGIN RESPONSE STATUS:', response.status);
             
-            // Parse the response as JSON
             const data = await response.json();
             console.log('📥 Login response data:', data);
             
             if (response.ok && data.success) {
                 utils.showToast('✅ Login successful!', 'success');
                 
-                // Save user info from response
                 localStorage.setItem('savedEmail', email);
                 localStorage.setItem('userEmail', data.email || email);
                 if (data.userId) localStorage.setItem('userId', data.userId);
                 if (data.role) localStorage.setItem('userRole', data.role);
                 if (data.name) localStorage.setItem('userName', data.name);
+                if (data.token) localStorage.setItem('token', data.token);
                 
-                // Redirect to dashboard immediately
-                redirectToDashboard();
+                setTimeout(() => {
+                    redirectToDashboard();
+                }, 500);
                 
             } else if (response.status === 401) {
                 utils.showToast(data.message || '❌ Invalid email or password', 'error');
@@ -590,8 +603,10 @@ const handlers = {
             console.error('❌ Login error:', error);
             utils.showToast('❌ Network error', 'error');
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
         }
     },
     
@@ -649,10 +664,12 @@ const handlers = {
         }
         
         const submitBtn = e.target.querySelector('.submit-btn');
-        const originalBtnText = submitBtn.innerHTML;
+        const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Sign Up';
         
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="btn-text">Creating account...</span> <i class="fas fa-spinner fa-spin"></i>';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="btn-text">Creating account...</span> <i class="fas fa-spinner fa-spin"></i>';
+        }
         utils.showToast('Creating your account...', 'info');
         
         try {
@@ -677,14 +694,18 @@ const handlers = {
                 }, 1500);
             } else {
                 utils.showToast(data.message || '❌ Registration failed', 'error');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
             }
         } catch (error) {
             console.error('❌ Registration error:', error);
             utils.showToast('❌ Network error. Please try again.', 'error');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
         }
     },
     
@@ -706,10 +727,12 @@ const handlers = {
         }
         
         const submitBtn = e.target.querySelector('.submit-btn');
-        const originalBtnText = submitBtn.innerHTML;
+        const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Send Reset Link';
         
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="btn-text">Sending...</span> <i class="fas fa-spinner fa-spin"></i>';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="btn-text">Sending...</span> <i class="fas fa-spinner fa-spin"></i>';
+        }
         utils.showToast('Sending reset instructions...', 'info');
         
         try {
@@ -723,14 +746,18 @@ const handlers = {
                 }, 1500);
             } else {
                 utils.showToast(data.message || '❌ Failed', 'error');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
             }
         } catch (error) {
             console.error('❌ Forgot password error:', error);
             utils.showToast('❌ Network error', 'error');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
         }
     }
 };
@@ -781,15 +808,29 @@ function initializeEventListeners() {
         });
     }
     
+    // ⭐⭐⭐ FIXED - SIGURADING MAY e.preventDefault() ANG LOGIN FORM ⭐⭐⭐
     if (elements.loginForm) {
+        // Remove any existing listeners to prevent duplicates
+        const newLoginForm = elements.loginForm.cloneNode(true);
+        elements.loginForm.parentNode.replaceChild(newLoginForm, elements.loginForm);
+        elements.loginForm = newLoginForm;
+        
         elements.loginForm.addEventListener('submit', handlers.login);
     }
     
     if (elements.signupForm) {
+        const newSignupForm = elements.signupForm.cloneNode(true);
+        elements.signupForm.parentNode.replaceChild(newSignupForm, elements.signupForm);
+        elements.signupForm = newSignupForm;
+        
         elements.signupForm.addEventListener('submit', handlers.register);
     }
     
     if (elements.forgotForm) {
+        const newForgotForm = elements.forgotForm.cloneNode(true);
+        elements.forgotForm.parentNode.replaceChild(newForgotForm, elements.forgotForm);
+        elements.forgotForm = newForgotForm;
+        
         elements.forgotForm.addEventListener('submit', handlers.forgotPassword);
     }
 }
@@ -801,7 +842,8 @@ async function initialize() {
     
     const isLoginPage = window.location.pathname === '/' || 
                         window.location.pathname === '/index.html' ||
-                        window.location.pathname.endsWith('index.html');
+                        window.location.pathname.endsWith('index.html') ||
+                        window.location.pathname === '/login.html';
     
     if (isLoginPage) {
         try {
