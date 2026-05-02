@@ -1,23 +1,19 @@
 // ==================== API CONFIGURATION ====================
-// Detect environment (local, railway, etc.)
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const isRailway = window.location.hostname.includes('up.railway.app');
+// Detect if running on ngrok or railway or localhost
 const isNgrok = window.location.hostname.includes('ngrok-free.dev');
+const isRailway = window.location.hostname.includes('up.railway.app');
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
 let API_BASE_URL;
 
 if (isRailway) {
-    // Railway: use root URL without /api (controller has /api/auth)
     API_BASE_URL = 'https://' + window.location.hostname;
 } else if (isLocalhost) {
-    // Local development
     API_BASE_URL = 'http://localhost:8080';
 } else if (isNgrok) {
-    // Ngrok tunnel
-    API_BASE_URL = 'https://' + window.location.hostname;
+    API_BASE_URL = '/api';
 } else {
-    // Default fallback
-    API_BASE_URL = window.location.protocol + '//' + window.location.hostname;
+    API_BASE_URL = '/api';
 }
 
 console.log('🔧 API_BASE_URL:', API_BASE_URL);
@@ -36,7 +32,6 @@ const CONFIG = {
 };
 
 // ==================== API ENDPOINTS ====================
-// Note: Controller has @RequestMapping("/api/auth") so endpoints are /api/auth/xxx
 const ENDPOINTS = {
     TEST: `${API_BASE_URL}/api/auth/test`,
     LOGIN: `${API_BASE_URL}/api/auth/login`,
@@ -47,8 +42,6 @@ const ENDPOINTS = {
     CHECK_EMAIL: `${API_BASE_URL}/api/auth/check-email`,
     SESSION_CHECK: `${API_BASE_URL}/api/auth/check-session`
 };
-
-console.log('📡 ENDPOINTS:', ENDPOINTS);
 
 // ==================== DOM ELEMENTS ====================
 const elements = {
@@ -102,17 +95,24 @@ async function checkBackendSession() {
         
         console.log('📡 Session check response status:', response.status);
         
-        if (response.ok) {
-            const data = await response.json();
-            if (data && data.success !== false) {
-                console.log('✅ Active session found:', data);
-                return data;
-            }
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('text/html')) {
+            console.warn('⚠️ Server returned HTML instead of JSON - endpoint may not exist yet');
+            return null;
         }
         
-        console.log('ℹ️ No active session');
-        return null;
+        if (response.ok) {
+            const data = await response.json();
+            console.log('✅ Active session found:', data);
+            return data;
+        }
         
+        if (response.status === 401 || response.status === 403) {
+            console.log('ℹ️ No active session (401/403 response)');
+            return null;
+        }
+        
+        return null;
     } catch (error) {
         console.log('ℹ️ Session check skipped:', error.message);
         return null;
@@ -125,7 +125,7 @@ const utils = {
     
     validatePhinmaEmail: (email) => email.endsWith('@phinmaed.com'),
     
-    // Full name validation - flexible
+    // ✅ FIXED: More flexible full name validation
     validateFullName: (name) => {
         if (!name || !name.trim()) {
             return 'Please enter your full name';
@@ -142,12 +142,14 @@ const utils = {
             return 'Please enter a valid name (max 4 words)';
         }
         
+        // Check each word has at least 2 characters
         for (let word of words) {
             if (word.length < 2) {
                 return `"${word}" is too short. Please enter full name properly.`;
             }
         }
         
+        // Auto-format the name (capitalize first letter of each word)
         const formattedName = words.map(word => {
             return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         }).join(' ');
@@ -156,6 +158,7 @@ const utils = {
     },
     
     formatFullName: (name) => {
+        if (!name) return '';
         const cleanName = name.trim().replace(/\s+/g, ' ');
         const words = cleanName.split(' ');
         return words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
@@ -366,7 +369,8 @@ const otpHandler = {
             const response = await fetch(ENDPOINTS.VERIFY_OTP, {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
                 },
                 body: JSON.stringify({
                     email: state.currentUserEmail,
@@ -427,7 +431,8 @@ const otpHandler = {
             const response = await fetch(ENDPOINTS.RESEND_OTP, {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
                 },
                 body: JSON.stringify({ 
                     email: state.currentUserEmail,
@@ -449,7 +454,7 @@ const otpHandler = {
             
             if (resendBtn) {
                 resendBtn.disabled = false;
-                resendBtn.innerHTML = originalText;
+                resendBtn.innerHTML = '<i class="fas fa-redo"></i>';
             }
         } catch (error) {
             console.error('❌ Resend error:', error);
@@ -458,7 +463,7 @@ const otpHandler = {
             
             if (resendBtn) {
                 resendBtn.disabled = false;
-                resendBtn.innerHTML = originalText;
+                resendBtn.innerHTML = '<i class="fas fa-redo"></i>';
             }
         }
     }
@@ -488,7 +493,8 @@ const api = {
             const response = await fetch(ENDPOINTS.REGISTER, {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
                 },
                 body: JSON.stringify({ 
                     fullName: fullName,
@@ -511,7 +517,8 @@ const api = {
         const response = await fetch(ENDPOINTS.FORGOT_PASSWORD, {
             method: 'POST',
             headers: { 
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             },
             body: JSON.stringify({ email })
         });
@@ -522,7 +529,8 @@ const api = {
         const response = await fetch(ENDPOINTS.CHECK_EMAIL, {
             method: 'POST',
             headers: { 
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             },
             body: JSON.stringify({ email })
         });
@@ -542,15 +550,17 @@ function redirectToDashboard() {
 const handlers = {
     login: async (e) => {
         e.preventDefault();
-        e.stopPropagation();
         
         if (!elements.loginEmail || !elements.loginPassword) return;
         
         const email = elements.loginEmail.value;
         const password = elements.loginPassword.value;
-        const rememberMe = elements.rememberMe?.checked || false;
+        const rememberMe = elements.rememberMe?.checked;
         
-        console.log('📝 Login attempt:', { email, rememberMe: rememberMe ? 'Yes' : 'No' });
+        if (!rememberMe) {
+            utils.showToast('Please check "Remember Me" to login', 'warning');
+            return;
+        }
         
         if (!utils.validateEmail(email)) {
             utils.showToast('Invalid email address', 'error');
@@ -568,12 +578,10 @@ const handlers = {
         }
         
         const submitBtn = e.target.querySelector('.submit-btn');
-        const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Login';
+        const originalBtnText = submitBtn.innerHTML;
         
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="btn-text">Logging in...</span> <i class="fas fa-spinner fa-spin"></i>';
-        }
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="btn-text">Logging in...</span> <i class="fas fa-spinner fa-spin"></i>';
         utils.showToast('Logging in...', 'info');
         
         try {
@@ -594,9 +602,7 @@ const handlers = {
                 if (data.name) localStorage.setItem('userName', data.name);
                 if (data.token) localStorage.setItem('token', data.token);
                 
-                setTimeout(() => {
-                    redirectToDashboard();
-                }, 500);
+                redirectToDashboard();
                 
             } else if (response.status === 401) {
                 utils.showToast(data.message || '❌ Invalid email or password', 'error');
@@ -607,12 +613,10 @@ const handlers = {
             }
         } catch (error) {
             console.error('❌ Login error:', error);
-            utils.showToast('❌ Network error. Please check your connection.', 'error');
+            utils.showToast('❌ Network error', 'error');
         } finally {
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            }
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
         }
     },
     
@@ -629,6 +633,7 @@ const handlers = {
         const password = elements.signupPassword.value;
         const confirmPassword = elements.confirmPassword.value;
         
+        // ✅ FIXED: Handle object return type
         const nameValidation = utils.validateFullName(name);
         
         if (typeof nameValidation === 'string') {
@@ -637,12 +642,13 @@ const handlers = {
         }
         
         if (!nameValidation.isValid) {
-            utils.showToast(nameValidation.message, 'error');
+            utils.showToast(nameValidation.message || 'Invalid name', 'error');
             return;
         }
         
         const formattedName = nameValidation.formattedName;
         
+        // Update the input field with formatted name
         if (elements.signupName && formattedName !== name) {
             elements.signupName.value = formattedName;
         }
@@ -680,12 +686,10 @@ const handlers = {
         }
         
         const submitBtn = e.target.querySelector('.submit-btn');
-        const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Sign Up';
+        const originalBtnText = submitBtn.innerHTML;
         
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="btn-text">Creating account...</span> <i class="fas fa-spinner fa-spin"></i>';
-        }
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="btn-text">Creating account...</span> <i class="fas fa-spinner fa-spin"></i>';
         utils.showToast('Creating your account...', 'info');
         
         try {
@@ -710,18 +714,14 @@ const handlers = {
                 }, 1500);
             } else {
                 utils.showToast(data.message || '❌ Registration failed', 'error');
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalBtnText;
-                }
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         } catch (error) {
             console.error('❌ Registration error:', error);
             utils.showToast('❌ Network error. Please try again.', 'error');
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            }
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
         }
     },
     
@@ -743,12 +743,10 @@ const handlers = {
         }
         
         const submitBtn = e.target.querySelector('.submit-btn');
-        const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Send Reset Link';
+        const originalBtnText = submitBtn.innerHTML;
         
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="btn-text">Sending...</span> <i class="fas fa-spinner fa-spin"></i>';
-        }
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="btn-text">Sending...</span> <i class="fas fa-spinner fa-spin"></i>';
         utils.showToast('Sending reset instructions...', 'info');
         
         try {
@@ -762,18 +760,14 @@ const handlers = {
                 }, 1500);
             } else {
                 utils.showToast(data.message || '❌ Failed', 'error');
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalBtnText;
-                }
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         } catch (error) {
             console.error('❌ Forgot password error:', error);
             utils.showToast('❌ Network error', 'error');
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            }
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
         }
     }
 };
@@ -825,23 +819,14 @@ function initializeEventListeners() {
     }
     
     if (elements.loginForm) {
-        const newLoginForm = elements.loginForm.cloneNode(true);
-        elements.loginForm.parentNode.replaceChild(newLoginForm, elements.loginForm);
-        elements.loginForm = newLoginForm;
         elements.loginForm.addEventListener('submit', handlers.login);
     }
     
     if (elements.signupForm) {
-        const newSignupForm = elements.signupForm.cloneNode(true);
-        elements.signupForm.parentNode.replaceChild(newSignupForm, elements.signupForm);
-        elements.signupForm = newSignupForm;
         elements.signupForm.addEventListener('submit', handlers.register);
     }
     
     if (elements.forgotForm) {
-        const newForgotForm = elements.forgotForm.cloneNode(true);
-        elements.forgotForm.parentNode.replaceChild(newForgotForm, elements.forgotForm);
-        elements.forgotForm = newForgotForm;
         elements.forgotForm.addEventListener('submit', handlers.forgotPassword);
     }
 }
@@ -883,15 +868,20 @@ async function initialize() {
     }
     
     // Test backend connection
-    try {
-        const testResponse = await fetch(ENDPOINTS.TEST);
-        if (testResponse.ok) {
-            const data = await testResponse.json();
-            console.log('✅ Backend connected:', data);
-        }
-    } catch (err) {
-        console.log('ℹ️ Backend test:', err.message);
-    }
+    fetch(ENDPOINTS.TEST, {
+        headers: {
+            'ngrok-skip-browser-warning': 'true'
+        },
+        credentials: 'include'
+    })
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+            throw new Error('Backend not ready');
+        })
+        .then(data => console.log('✅ Backend connected:', data))
+        .catch(err => console.log('ℹ️ Backend test:', err.message));
 }
 
 // ==================== EXPOSE GLOBALLY ====================
