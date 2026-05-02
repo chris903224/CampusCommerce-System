@@ -1,22 +1,30 @@
-// Get token from localStorage or URL parameter
-let token = localStorage.getItem('authToken') || 'bypass-token';
-let userRole = localStorage.getItem('userRole') || 'USER';
-
-// Get userId from localStorage (set during login)
-let userId = localStorage.getItem('userId') || null;
-
-console.log('🔐 Auth initialized');
-console.log('👤 User Role:', userRole);
-console.log('🆔 User ID:', userId);
-
 // ============================================
-// API Configuration - FOR RAILWAY (FIXED)
+// API Configuration - FIXED FOR RAILWAY
 // ============================================
-// Simple: Gamitin ang current hostname para sa API calls
-const API_BASE_URL = window.location.protocol + '//' + window.location.hostname + '/api';
+const isLocalhost = window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1';
+const isRailway = window.location.hostname.includes('up.railway.app');
+const isNgrok = window.location.hostname.includes('ngrok-free.dev');
+
+let API_BASE_URL;
+
+if (isRailway) {
+    // Railway production - use current hostname
+    API_BASE_URL = 'https://' + window.location.hostname + '/api';
+} else if (isLocalhost) {
+    // Local development
+    API_BASE_URL = 'http://localhost:8080/api';
+} else if (isNgrok) {
+    // Ngrok tunnel
+    API_BASE_URL = 'https://localhost:8080/api';
+} else {
+    // Default fallback
+    API_BASE_URL = '/api';
+}
 
 console.log('🔧 API_BASE_URL:', API_BASE_URL);
-console.log('🌐 Current Host:', window.location.hostname); ganyan code ba dapat? instead of link na gagamitin
+console.log('🌐 Current Host:', window.location.hostname);
+console.log('📡 Mode:', isRailway ? 'Railway (Production)' : (isLocalhost ? 'Local' : (isNgrok ? 'Ngrok' : 'Unknown')));
 
         // ============================================
         // Application State
