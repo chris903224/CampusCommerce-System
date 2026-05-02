@@ -1,0 +1,259 @@
+/* ========== ROOM INFORMATION 3-COLUMN STYLES ========== */
+
+.room-info-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+[data-theme="dark"] .room-info-section {
+    border-top-color: #4a5568;
+}
+
+.room-info-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+[data-theme="dark"] .room-info-section h3 {
+    color: #e2e8f0;
+}
+
+.room-info-section h3 i {
+    color: #667eea;
+    font-size: 1.2rem;
+}
+
+/* 3-Column Grid Layout */
+.room-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* Individual Column */
+.room-info-column {
+    display: flex;
+    flex-direction: column;
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.room-info-column:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .room-info-column {
+    background: #2d3748;
+}
+
+[data-theme="dark"] .room-info-column:hover {
+    background: #2d3748;
+    border-color: #667eea;
+}
+
+/* Column Label */
+.room-info-column label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.room-info-column label i {
+    font-size: 12px;
+    color: #667eea;
+}
+
+/* Column Input */
+.room-info-column input {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.room-info-column input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.room-info-column input::placeholder {
+    color: #999;
+    font-size: 13px;
+}
+
+[data-theme="dark"] .room-info-column input {
+    background: #1a202c;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .room-info-column input::placeholder {
+    color: #718096;
+}
+
+/* Save Button */
+.save-room-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.save-room-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.save-room-btn:active {
+    transform: translateY(0);
+}
+
+[data-theme="dark"] .save-room-btn {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46a0 100%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .room-info-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .room-info-column {
+        padding: 10px;
+    }
+    
+    .room-info-section h3 {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .room-info-section {
+        margin-top: 15px;
+        padding-top: 15px;
+    }
+    
+    .room-info-column label {
+        font-size: 11px;
+    }
+    
+    .room-info-column input {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    .save-room-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
+
+/* Animation for save success */
+@keyframes savePulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.save-room-btn.saving {
+    animation: savePulse 0.5s ease;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+/* Loading state */
+.save-room-btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.save-room-btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success message */
+.save-success-message {
+    background: #48bb78;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideDown 0.3s ease;
+    font-size: 14px;
+}
+
+.save-success-message i {
+    font-size: 16px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dark mode support for success message */
+[data-theme="dark"] .save-success-message {
+    background: #2f855a;
+}

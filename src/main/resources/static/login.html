@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJC Supply — Admin Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <!-- Splash screen -->
+    <div class="splash">
+        <div class="splash-title">SJC SUPPLY</div>
+        <div class="splash-sub">Admin Portal</div>
+        <div class="splash-bar">
+            <div class="splash-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- STEP 1: LOGIN METHOD SELECTOR -->
+    <div class="card step-card" id="stepMethod">
+        <div class="card-header">
+            <div class="logo-wrap">
+                <img src="logoo.png" alt="SJC Logo" onerror="this.style.display='none'; this.parentElement.querySelector('.fallback-icon').style.display='block'">
+                <i class="fas fa-shield-alt fallback-icon"></i>
+            </div>
+            <div class="card-label">Admin Portal</div>
+            <div class="card-welcome">Secure Access</div>
+            <p class="card-sub">Choose your login method</p>
+        </div>
+
+        <!-- Method Selector Buttons -->
+        <div class="method-selector">
+            <button class="method-btn active" data-method="password">
+                <i class="fas fa-lock"></i>
+                <span>Password</span>
+            </button>
+            <button class="method-btn" data-method="face">
+                <i class="fas fa-camera"></i>
+                <span>Face Recognition</span>
+            </button>
+        </div>
+
+        <!-- PASSWORD LOGIN PANEL -->
+        <div id="panelPassword" class="login-panel active">
+            <form id="adminLoginForm">
+                <div class="input-wrap">
+                    <i class="fas fa-lock icon-left"></i>
+                    <input type="password" id="adminPassword" placeholder="Enter your password" required autofocus>
+                    <i class="fas fa-eye eye-toggle" id="eyeToggle"></i>
+                    <div class="focus-line"></div>
+                </div>
+                <div id="message" class="message"></div>
+                <button type="submit" class="btn" id="loginBtn">
+                    <span>Verify Password</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- FACE RECOGNITION LOGIN PANEL -->
+        <div id="panelFace" class="login-panel">
+            <div class="webcam-container">
+                <video id="faceVideo" autoplay muted playsinline></video>
+                <canvas id="faceCanvas"></canvas>
+                <div class="webcam-overlay">
+                    <div class="corner tl"></div>
+                    <div class="corner tr"></div>
+                    <div class="corner bl"></div>
+                    <div class="corner br"></div>
+                    <div class="scan-line"></div>
+                </div>
+                <div id="faceStatus" class="webcam-status">Initializing camera...</div>
+            </div>
+            <div id="faceMessage" class="message"></div>
+            <div class="face-actions" style="display: flex; gap: 10px; margin-top: 15px;">
+                <button type="button" class="btn-secondary" id="cancelFaceBtn" style="flex:1; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:14px; padding:12px; color:white; cursor:pointer;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="btn" id="verifyFaceBtn" disabled style="flex:1;">
+                    <i class="fas fa-camera"></i> Verify Face
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 2: OTP VERIFICATION (for password login) -->
+    <div class="card step-card" id="stepOtp" style="display: none;">
+        <div class="card-header">
+            <div class="logo-wrap">
+                <img src="logoo.png" alt="SJC Logo" onerror="this.style.display='none'; this.parentElement.querySelector('.fallback-icon').style.display='block'">
+                <i class="fas fa-shield-alt fallback-icon"></i>
+            </div>
+            <div class="card-label">Two-Factor Auth</div>
+            <div class="card-welcome">OTP Verification</div>
+            <p class="card-sub">Enter 6-digit code sent to your email</p>
+        </div>
+
+        <div class="form">
+            <div class="input-wrap">
+                <i class="fas fa-key icon-left"></i>
+                <input type="text" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6" autocomplete="off">
+                <div class="focus-line"></div>
+            </div>
+            <div id="otpMessage" class="message"></div>
+            <div class="otp-timer">
+                <span id="timerDisplay"></span>
+                <a href="#" id="resendOtpLink">Resend OTP</a>
+            </div>
+            <button type="button" class="btn" id="verifyOtpBtn">
+                <span>Verify OTP</span>
+                <i class="fas fa-check-circle"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>

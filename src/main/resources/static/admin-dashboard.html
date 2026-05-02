@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SJC SUPPLIES - CampusCommerce</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+</head>
+<body>
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-school"></i>
+                <h2>SJC SUPPLIES <span class="admin-badge">Admin</span></h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <h3>MAIN</h3>
+                <a href="#dashboard" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#users" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </a>
+                <a href="#products" class="nav-link">
+                    <i class="fas fa-box"></i>
+                    <span>Product Management</span>
+                </a>
+                <a href="#orders" class="nav-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Order Management</span>
+                </a>
+                <a href="#payments" class="nav-link">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Payment Verification</span>
+                </a>
+                <a href="#reports" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports & Analytics</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <h3>SETTINGS</h3>
+                <a href="#settings" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>System Settings</span>
+                </a>
+                <a href="#logout" class="nav-link" id="adminLogout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="admin-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="admin-info">
+                    <h4 id="adminName">Loading...</h4>
+                    <p id="adminRole">Administrator</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Top Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSubtitle"><i>System overview and analytics</i></p>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" id="globalSearch" placeholder="Search...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="header-notifications">
+                    <button class="notification-btn" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count" id="notificationCount">0</span>
+                    </button>
+                    <div class="notification-dropdown" id="notificationDropdown">
+                        <div class="notification-header">
+                            <h4>Notifications</h4>
+                            <button class="mark-all-read" id="markAllRead">Mark all as read</button>
+                        </div>
+                        <div class="notification-list" id="notificationList">
+                            <div class="loading-spinner">Loading...</div>
+                        </div>
+                        <div class="notification-footer">
+                            <a href="#" id="viewAllNotifications">View all notifications</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="currentDate"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="admin-section active">
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-content">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="stat-content">
+                        <h3 id="totalOrders">0</h3>
+                        <p>Total Orders</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-content">
+                        <h3 id="totalRevenue">₱0.00</h3>
+                        <p>Total Revenue</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-box"></i></div>
+                    <div class="stat-content">
+                        <h3 id="lowStock">0</h3>
+                        <p>Low Stock Items</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-charts">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Sales Overview</h3>
+                        <select class="chart-period" id="salesPeriod">
+                            <option value="7">Last 7 days</option>
+                            <option value="30" selected>Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                        </select>
+                    </div>
+                    <div class="chart-placeholder" id="salesChart">
+                        <div class="loading-spinner">Loading chart...</div>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Order Status Distribution</h3>
+                    </div>
+                    <div class="chart-placeholder" id="orderStatusChart">
+                        <div class="loading-spinner">Loading chart...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-activities">
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <h3>Recent Orders</h3>
+                        <a href="#orders" class="view-all">View All</a>
+                    </div>
+                    <div class="activity-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentOrdersTable">
+                                <tr><td colspan="6" class="text-center">Loading orders...</td</tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <h3>Recent User Registrations</h3>
+                        <a href="#users" class="view-all">View All</a>
+                    </div>
+                    <div class="user-list" id="recentUsersList">
+                        <div class="loading-spinner">Loading users...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Management Section -->
+        <section id="users" class="admin-section">
+            <div class="management-tools">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="userSearch" placeholder="Search users by name, email, or phone...">
+                </div>
+                <div class="management-actions">
+                    <button class="btn-primary" id="exportUsers">
+                        <i class="fas fa-download"></i> Export Users
+                    </button>
+                    <button class="btn-secondary" id="addUserBtn">
+                        <i class="fas fa-user-plus"></i> Add User
+                    </button>
+                </div>
+            </div>
+            
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAllUsers"></th>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>School Info</th>
+                            <th>Registered</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="9" class="text-center">Loading users...</td</tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-footer">
+                <div class="table-info">
+                    Showing <span id="userCount">0</span> of <span id="totalUserCount">0</span> users
+                </div>
+                <div class="pagination">
+                    <button class="pagination-btn" id="prevPage"><i class="fas fa-chevron-left"></i></button>
+                    <span class="page-numbers">Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+                    <button class="pagination-btn" id="nextPage"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Add/Edit User Modal -->
+            <div id="userModal" class="admin-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="userModalTitle">Add New User</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="userForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="modalUserName">Full Name *</label>
+                                    <input type="text" id="modalUserName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="modalUserEmail">Email Address *</label>
+                                    <input type="email" id="modalUserEmail" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="modalUserPhone">Contact Number</label>
+                                    <input type="tel" id="modalUserPhone">
+                                </div>
+                                <div class="form-group">
+                                    <label for="modalUserRole">User Role *</label>
+                                    <select id="modalUserRole" required>
+                                        <option value="customer">Customer</option>
+                                        <option value="admin">Administrator</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row" id="passwordFields">
+                                <div class="form-group">
+                                    <label for="modalUserPassword">Password *</label>
+                                    <input type="password" id="modalUserPassword">
+                                </div>
+                                <div class="form-group">
+                                    <label for="modalUserConfirmPassword">Confirm Password *</label>
+                                    <input type="password" id="modalUserConfirmPassword">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="modalUserStatus">Account Status</label>
+                                <select id="modalUserStatus">
+                                    <option value="active">Active</option>
+                                    <option value="suspended">Suspended</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-secondary close-modal">Cancel</button>
+                        <button class="btn-primary" id="saveUserBtn">Save User</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Management Section -->
+        <section id="products" class="admin-section">
+            <div class="management-tools">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="productSearch" placeholder="Search products...">
+                </div>
+                <div class="management-actions">
+                    <button class="btn-primary" id="addProductBtn">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                    <button class="btn-secondary" id="exportProducts">
+                        <i class="fas fa-download"></i> Export Products
+                    </button>
+                </div>
+            </div>
+            
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>SKU</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <tr><td colspan="8" class="text-center">Loading products...</td</tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Add/Edit Product Modal -->
+            <div id="productModal" class="admin-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="productModalTitle">Add New Product</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="productForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="modalProductName">Product Name *</label>
+                                    <input type="text" id="modalProductName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="modalProductCategory">Category *</label>
+                                    <select id="modalProductCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Paper">Paper</option>
+                                        <option value="Pens">Pens</option>
+                                        <option value="Notebooks">Notebooks</option>
+                                        <option value="Art Supplies">Art Supplies</option>
+                                        <option value="Office Supplies">Office Supplies</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="modalProductDescription">Description</label>
+                                    <textarea id="modalProductDescription" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="modalProductStatus">Status</label>
+                                    <select id="modalProductStatus">
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Product Sizes & Variants</label>
+                                <div id="sizesContainer" class="sizes-container"></div>
+                                <button type="button" class="btn-secondary add-size-btn" onclick="addSize()">
+                                    <i class="fas fa-plus"></i> Add Size
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <label for="modalProductImage">Product Image</label>
+                                <div class="image-upload-container">
+                                    <div id="productImagePreview" class="image-preview">
+                                        <i class="fas fa-image"></i>
+                                        <span>No image selected</span>
+                                    </div>
+                                    <input type="file" id="modalProductImage" accept="image/*" style="display: none;">
+                                    <input type="hidden" id="modalProductImageUrl">
+                                    <button type="button" class="btn-secondary" id="uploadImageBtn">
+                                        <i class="fas fa-upload"></i> Upload Image
+                                    </button>
+                                    <button type="button" class="btn-danger" id="removeImageBtn" style="display: none;">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-secondary close-modal">Cancel</button>
+                        <button class="btn-primary" id="saveProductBtn">Save Product</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Management Section -->
+        <section id="orders" class="admin-section">
+            <div class="order-filters">
+                <div class="filter-group">
+                    <label>Filter by Status:</label>
+                    <div class="filter-buttons" id="orderStatusFilters">
+                        <button class="filter-btn active" data-filter="all">All Orders</button>
+                        <button class="filter-btn" data-filter="pending">Pending</button>
+                        <button class="filter-btn" data-filter="processing">Processing</button>
+                        <button class="filter-btn" data-filter="shipped">Shipped</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                        <button class="filter-btn" data-filter="cancelled">Cancelled</button>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Date Range:</label>
+                    <div class="date-range">
+                        <input type="date" id="startDate">
+                        <span>to</span>
+                        <input type="date" id="endDate">
+                        <button class="btn-secondary" id="applyDateFilter">Apply</button>
+                        <button class="btn-secondary" id="clearDateFilter">Clear</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Payment Method</th>
+                            <th>Room</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <tr><td colspan="9" class="text-center">Loading orders...</td</tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Order Details Modal -->
+            <div id="orderDetailsModal" class="admin-modal">
+                <div class="modal-content wide-modal">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-receipt"></i> Order Details - <span id="detailOrderId"></span></h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="order-details-two-column">
+                            <div class="order-left-col">
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-user-circle"></i>
+                                        <h4>Customer Information</h4>
+                                    </div>
+                                    <div class="info-grid">
+                                        <div class="info-row">
+                                            <span class="info-label">Full Name:</span>
+                                            <span class="info-value" id="infoCustomer">-</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Email Address:</span>
+                                            <span class="info-value" id="infoEmail">-</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Contact Number:</span>
+                                            <span class="info-value" id="infoContact">-</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Student ID:</span>
+                                            <span class="info-value" id="infoStudentId">-</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">School Email:</span>
+                                            <span class="info-value" id="infoSchoolEmail">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-door-open"></i>
+                                        <h4>Room / Building Details</h4>
+                                    </div>
+                                    <div class="info-grid">
+                                        <div class="info-row">
+                                            <span class="info-label">Building:</span>
+                                            <span class="info-value" id="infoBuilding">-</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Room Number:</span>
+                                            <span class="info-value" id="infoRoomNumber">-</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Special Instructions:</span>
+                                            <span class="info-value" id="infoSpecialDelivery">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        <h4>Order Information</h4>
+                                    </div>
+                                    <div class="info-grid">
+                                        <div class="info-row">
+                                            <span class="info-label">Order ID:</span>
+                                            <span class="info-value" id="infoOrderId">-</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Order Date:</span>
+                                            <span class="info-value" id="infoOrderDate">-</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Payment Method:</span>
+                                            <span class="info-value" id="infoPayment">-</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Payment Status:</span>
+                                            <span class="info-value" id="infoPaymentStatus">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-right-col">
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-boxes"></i>
+                                        <h4>Order Items</h4>
+                                    </div>
+                                    <div class="items-table-container">
+                                        <table class="items-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Size</th>
+                                                    <th>Qty</th>
+                                                    <th>Price</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="orderItemsTable">
+                                                <tr><td colspan="5" class="text-center">No items</td</tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-calculator"></i>
+                                        <h4>Order Summary</h4>
+                                    </div>
+                                    <div class="summary-panel">
+                                        <div class="summary-row">
+                                            <span class="summary-label">Subtotal:</span>
+                                            <span class="summary-value" id="orderSubtotal">₱0.00</span>
+                                        </div>
+                                        <div class="summary-row">
+                                            <span class="summary-label">Shipping Fee:</span>
+                                            <span class="summary-value" id="orderShipping">₱0.00</span>
+                                        </div>
+                                        <div class="summary-row total-row">
+                                            <span class="summary-label">Total Amount:</span>
+                                            <span class="summary-value total-amount" id="orderTotal">₱0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-truck"></i>
+                                        <h4>Tracking Information</h4>
+                                    </div>
+                                    <div class="info-grid">
+                                        <div class="info-row">
+                                            <span class="info-label">Tracking Number:</span>
+                                            <span class="info-value" id="infoTracking">Not assigned</span>
+                                            <button class="btn-icon" id="editTrackingBtn" title="Edit Tracking Number">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Estimated Delivery:</span>
+                                            <span class="info-value" id="infoEstimatedDelivery">To be determined</span>
+                                            <button class="btn-icon" id="editEstimatedDeliveryBtn" title="Edit Estimated Delivery Date">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </button>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Delivery Status:</span>
+                                            <span class="info-value" id="infoDeliveryStatus">Pending</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-gear"></i>
+                                        <h4>Order Actions</h4>
+                                    </div>
+                                    <div class="action-group">
+                                        <label>Update Status:</label>
+                                        <div class="status-update-row">
+                                            <select id="updateStatus" class="status-select">
+                                                <option value="pending">⏳ Pending</option>
+                                                <option value="processing">⚙️ Processing</option>
+                                                <option value="shipped">🚚 Shipped</option>
+                                                <option value="delivered">✅ Delivered</option>
+                                                <option value="completed">🎉 Completed</option>
+                                                <option value="cancelled">❌ Cancelled</option>
+                                            </select>
+                                            <button class="btn-primary" id="updateStatusBtn">Update Status</button>
+                                        </div>
+                                    </div>
+                                    <div class="action-buttons-row">
+                                        <button class="btn-secondary" id="printInvoice">
+                                            <i class="fas fa-print"></i> Print Invoice
+                                        </button>
+                                        <button class="btn-secondary" id="sendNotification">
+                                            <i class="fas fa-envelope"></i> Send Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-secondary close-modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Verification Section -->
+        <section id="payments" class="admin-section">
+            <div class="payment-tabs" id="paymentTabs">
+                <button class="payment-tab active" data-tab="pending">Pending Verification</button>
+                <button class="payment-tab" data-tab="verified">Verified Payments</button>
+                <button class="payment-tab" data-tab="rejected">Rejected Payments</button>
+            </div>
+            
+            <div class="payment-cards-container" id="paymentCardsContainer">
+                <div class="loading-spinner">Loading payments...</div>
+            </div>
+            
+            <!-- Payment Verification Modal -->
+            <div id="paymentVerificationModal" class="admin-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Payment Verification</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="payment-details">
+                            <div class="payment-info">
+                                <div class="info-item">
+                                    <span class="info-label">Order ID:</span>
+                                    <span class="info-value" id="verifyOrderId">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Customer:</span>
+                                    <span class="info-value" id="verifyCustomer">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Amount:</span>
+                                    <span class="info-value" id="verifyAmount">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Payment Method:</span>
+                                    <span class="info-value" id="verifyMethod">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Date & Time:</span>
+                                    <span class="info-value" id="verifyDate">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-proof">
+                                <h4>Payment Proof</h4>
+                                <div class="proof-image" id="verifyProofImage">
+                                    <i class="fas fa-receipt"></i>
+                                    <p>No proof uploaded</p>
+                                </div>
+                                <div class="proof-details">
+                                    <div class="info-item">
+                                        <span class="info-label">Reference No:</span>
+                                        <span class="info-value" id="verifyReferenceNo">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Sender Name:</span>
+                                        <span class="info-value" id="verifySender">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="verification-notes">
+                                <label for="verificationNotes">Verification Notes:</label>
+                                <textarea id="verificationNotes" placeholder="Add notes about this verification..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-danger" id="rejectPaymentBtn">
+                            <i class="fas fa-times"></i> Reject Payment
+                        </button>
+                        <button class="btn-success" id="approvePaymentBtn">
+                            <i class="fas fa-check"></i> Approve Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports" class="admin-section">
+            <div class="report-controls">
+                <div class="report-period">
+                    <label>Report Period:</label>
+                    <select id="reportPeriod">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30" selected>Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="365">Last 12 Months</option>
+                    </select>
+                </div>
+                <div class="report-actions">
+                    <button class="btn-primary" id="generateReport">
+                        <i class="fas fa-sync-alt"></i> Generate Report
+                    </button>
+                    <button class="btn-secondary" id="exportReport">
+                        <i class="fas fa-download"></i> Export Report
+                    </button>
+                </div>
+            </div>
+            
+            <div class="report-cards" id="reportCards">
+                <div class="report-card">
+                    <h4>Sales Summary</h4>
+                    <div class="report-summary" id="salesSummary">
+                        <div class="loading-spinner">Loading...</div>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <h4>Top Products</h4>
+                    <div class="top-products" id="topProducts">
+                        <div class="loading-spinner">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="report-chart" id="reportChart">
+                <div class="chart-header">
+                    <h4>Monthly Sales Trend</h4>
+                </div>
+                <div class="chart-container" id="monthlyChartContainer">
+                    <div class="loading-spinner">Loading chart...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Settings Section -->
+        <section id="settings" class="admin-section">
+            <div class="settings-container">
+                <div class="settings-tabs" id="settingsTabs">
+                    <button class="settings-tab active" data-tab="general">General</button>
+                    <button class="settings-tab" data-tab="payment">Payment</button>
+                    <button class="settings-tab" data-tab="shipping">Shipping</button>
+                    <button class="settings-tab" data-tab="security">Security</button>
+                </div>
+                
+                <div class="settings-content" id="settingsContent">
+                    <div class="settings-panel active" id="generalPanel">
+                        <h4>General Settings</h4>
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label for="storeName">Store Name</label>
+                                <input type="text" id="storeName" value="SJC Supplies">
+                            </div>
+                            <div class="form-group">
+                                <label for="storeEmail">Store Email</label>
+                                <input type="email" id="storeEmail" value="contact@sjcsupplies.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="storePhone">Store Phone</label>
+                                <input type="tel" id="storePhone" value="+63 912 345 6789">
+                            </div>
+                            <div class="form-group">
+                                <label for="storeAddress">Store Address</label>
+                                <textarea id="storeAddress" rows="3">SJC Building, Campus Drive, San Jose City</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="storeCurrency">Currency</label>
+                                <select id="storeCurrency">
+                                    <option value="PHP" selected>Philippine Peso (₱)</option>
+                                    <option value="USD">US Dollar ($)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="dashboardBackground">Dashboard Background</label>
+                                <select id="dashboardBackground">
+                                    <option value="default">Default</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="light-yellow">Light Yellow</option>
+                                    <option value="white">White</option>
+                                </select>
+                                <p class="help-text">Keeps the dashboard photo background and adds a color tint overlay.</p>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-panel" id="paymentPanel">
+                        <h4>Payment Settings</h4>
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <h5>GCash Payment</h5>
+                                <p>Accept payments via GCash mobile wallet</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="gcashEnabled" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <h5>QR Code Payment</h5>
+                                <p>Accept payments via QR code scanning</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="qrEnabled" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <h5>Cash on Delivery</h5>
+                                <p>Allow customers to pay upon delivery</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="codEnabled" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="gcashNumber">GCash Number</label>
+                            <input type="text" id="gcashNumber" value="09123456789">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-panel" id="shippingPanel">
+                        <h4>Shipping Settings</h4>
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label for="shippingFee">Standard Shipping Fee (₱)</label>
+                                <input type="number" id="shippingFee" value="50" step="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="freeShippingThreshold">Free Shipping Threshold (₱)</label>
+                                <input type="number" id="freeShippingThreshold" value="500" step="100">
+                                <p class="help-text">Orders above this amount get free shipping</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="deliveryDays">Estimated Delivery Days</label>
+                                <input type="number" id="deliveryDays" value="3" min="1">
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-panel" id="securityPanel">
+                        <h4>Security Settings</h4>
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <h5>Two-Factor Authentication</h5>
+                                <p>Require 2FA for admin accounts</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="twoFactorEnabled">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <h5>Login Attempt Limiting</h5>
+                                <p>Lock account after 5 failed login attempts</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="loginAttemptsEnabled" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <!-- ============ FACE REGISTRATION SECTION (ADD THIS) ============ -->
+                        <div class="security-action">
+                            <h5><i class="fas fa-camera"></i> Face Recognition Authentication</h5>
+                            <p>Register one or more face samples for stronger admin verification.</p>
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 10px;">
+                                <button class="btn-primary" id="registerFaceBtn">
+                                    <i class="fas fa-camera"></i> Add Face Sample
+                                </button>
+                                <span id="faceStatusBadge" style="font-size: 12px; padding: 4px 10px; border-radius: 20px; background: #1a1a2e;"></span>
+                                <span id="faceSampleCount" style="font-size: 12px; padding: 4px 10px; border-radius: 20px; background: rgba(79, 189, 116, 0.14); color: #4fbd74; border: 1px solid rgba(79, 189, 116, 0.25);"></span>
+                            </div>
+                        </div>
+                        <div class="security-action">
+                            <h5>Password Reset</h5>
+                            <p>Change your administrator password</p>
+                            <button class="btn-primary" id="changeAdminPassword">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-actions">
+                    <button class="btn-secondary" id="resetSettings">Reset to Default</button>
+                    <button class="btn-primary" id="saveSettings">Save Settings</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================================================ -->
+    <!-- FACE RECOGNITION MODALS -->
+    <!-- ================================================ -->
+
+    <!-- Face Recognition Modal for Admin Actions (Verification) -->
+    <div id="faceAuthModal" class="admin-modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-camera"></i> Face Recognition Required</h3>
+                <button class="close-modal" id="closeFaceModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; color: #f39c12;">
+                    <i class="fas fa-shield-alt"></i> This action requires admin face verification
+                </p>
+                <div class="face-verify-container" id="adminFaceContainer">
+                    <video id="adminFaceVideo" autoplay muted playsinline></video>
+                    <canvas id="adminFaceCanvas"></canvas>
+                    <div class="face-overlay">
+                        <div class="face-scan-line"></div>
+                        <div class="face-corner tl"></div>
+                        <div class="face-corner tr"></div>
+                        <div class="face-corner bl"></div>
+                        <div class="face-corner br"></div>
+                    </div>
+                    <div class="face-status" id="adminFaceStatus">
+                        <i class="fas fa-circle-notch fa-spin"></i> Loading camera...
+                    </div>
+                </div>
+                <p id="faceAuthMessage" class="face-message">Position your face in the frame and click Verify</p>
+                <div class="face-actions">
+                    <button class="btn-secondary" id="cancelFaceAuth">Cancel</button>
+                    <button class="btn-primary" id="verifyFaceBtn" disabled>
+                        <i class="fas fa-camera"></i> Verify Face
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Face Registration Modal (First Time Setup) -->
+    <div id="faceRegisterModal" class="admin-modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-camera"></i> Face Registration</h3>
+                <button class="close-modal" id="closeFaceRegisterModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; color: #2ecc71;">
+                    <i class="fas fa-shield-alt"></i> Register your face for admin verification
+                </p>
+                <div class="face-verify-container">
+                    <video id="registerFaceVideo" autoplay muted playsinline style="width: 100%; border-radius: 10px; background: #1a1a2e;"></video>
+                    <canvas id="registerFaceCanvas" style="display: none;"></canvas>
+                    <div class="face-status" id="registerFaceStatus">
+                        <i class="fas fa-circle-notch fa-spin"></i> Loading camera...
+                    </div>
+                </div>
+                <p id="registerFaceMessage" class="face-message">Position your face clearly in the frame</p>
+                <div class="face-actions">
+                    <button class="btn-secondary" id="cancelRegisterFaceBtn">Cancel</button>
+                    <button class="btn-primary" id="confirmRegisterFaceBtn" disabled>
+                        <i class="fas fa-camera"></i> Register Face
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

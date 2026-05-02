@@ -1,0 +1,314 @@
+/* ================================================
+   dashboard-light.css — LIGHT MODE ONLY
+   Applied when body does NOT have [data-theme="dark"]
+   ================================================ */
+
+/* ====== CSS VARIABLES — LIGHT MODE ====== */
+:root {
+    --primary-color: #047e5a;
+    --primary-dark: #27ae60;
+    --secondary-color: #f1c40f;
+    --accent-yellow: #f39c12;
+    --dark-color: #1a1a1a;
+    --light-color: #f0faf5;
+    --bg-primary: #ffffff;
+    --bg-secondary: linear-gradient(135deg, #f0faf5 0%, #f5fff8 0%);
+    --bg-tertiary: #e8f5ee;
+    --text-primary: #06ac59;
+    --text-secondary: #000000;
+    --text-light: #8aaa96;
+    --success-color: #000000;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --border-color: #c8e6d0;
+    --shadow: 0 2px 12px rgba(46, 204, 113, 0.08);
+    --shadow-md: 0 4px 24px rgba(46, 204, 113, 0.12);
+    --shadow-lg: 0 8px 40px rgba(46, 204, 113, 0.16);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --gradient-primary: linear-gradient(135deg, #108842 0%, #13fa73 100%);
+    --gradient-hero: linear-gradient(135deg, #1e8449 0%, #27ae60 50%, #2ecc71 100%);
+    --gradient-card: linear-gradient(145deg, #ffffff 0%, #f0faf5 100%);
+}
+
+/* ====== BODY ====== */
+body:not([data-theme="dark"]) {
+    letter-spacing: 0.15px;
+}
+
+/* ====== HEADER ====== */
+body:not([data-theme="dark"]) .header {
+    background: rgba(255, 255, 255, 0.98);
+    border-bottom: 2px solid rgba(38, 192, 102, 0.964);
+}
+
+/* ====== LOGO ====== */
+body:not([data-theme="dark"]) .logo span {
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body:not([data-theme="dark"]) .logo-img {
+    filter: drop-shadow(0 2px 6px rgba(46, 204, 113, 0.4));
+}
+
+/* ====== NAV LINKS ====== */
+body:not([data-theme="dark"]) .nav-link {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--text-secondary);
+}
+
+body:not([data-theme="dark"]) .nav-link.active {
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+body:not([data-theme="dark"]) .nav-link:hover {
+    color: var(--primary-dark);
+}
+
+/* ====== SEARCH BOX ====== */
+body:not([data-theme="dark"]) .search-box {
+    background: #ffffff;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.06);
+}
+
+/* ====== SECTION TITLES ====== */
+body:not([data-theme="dark"]) .section-title,
+body:not([data-theme="dark"]) .page-title {
+    color: #2a7849f6;
+    letter-spacing: -0.3px;
+}
+
+/* ====== STAT CARDS ====== */
+body:not([data-theme="dark"]) .stat-card {
+    border-left: 4px solid var(--primary-color);
+    box-shadow: 0 4px 20px rgba(46, 204, 113, 0.1);
+}
+
+body:not([data-theme="dark"]) .stat-info h3 {
+    color: var(--primary-dark);
+    font-size: 42px;
+}
+
+body:not([data-theme="dark"]) .stat-info p {
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* ====== PRODUCT CARDS ====== */
+body:not([data-theme="dark"]) .product-card {
+    box-shadow: 0 4px 20px rgba(46, 204, 113, 0.08);
+    border: 1px solid rgba(200, 230, 208, 0.8);
+}
+
+body:not([data-theme="dark"]) .product-card:hover {
+    box-shadow: 0 12px 40px rgba(9, 170, 76, 0.789);
+}
+
+body:not([data-theme="dark"]) .product-name {
+    color: #096a33;
+    font-weight: 700;
+}
+
+body:not([data-theme="dark"]) .product-category {
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+/* ====== NO IMAGE ====== */
+body:not([data-theme="dark"]) .no-image {
+    background: linear-gradient(135deg, #d4ead9 0%, #eef7f0 100%);
+}
+
+body:not([data-theme="dark"]) .no-image i {
+    color: #999999;
+}
+
+/* ====== FORM CARD & PROFILE CARD HEADINGS ====== */
+body:not([data-theme="dark"]) .form-card h3,
+body:not([data-theme="dark"]) .profile-card h3 {
+    color: #000000;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+}
+
+/* ====== FORM LABELS ====== */
+body:not([data-theme="dark"]) .form-group label {
+    color: black;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+}
+
+/* ====== FORM INPUTS ====== */
+body:not([data-theme="dark"]) .form-group input,
+body:not([data-theme="dark"]) .form-group select,
+body:not([data-theme="dark"]) .form-group textarea {
+    color: #1e3a28 !important;
+    background: rgba(223, 232, 230, 0.425) !important;
+}
+
+body:not([data-theme="dark"]) .form-group input::placeholder,
+body:not([data-theme="dark"]) .form-group select::placeholder,
+body:not([data-theme="dark"]) .form-group textarea::placeholder {
+    color: #5a7a6a !important;
+}
+
+/* ====== PROFILE CARD ====== */
+body:not([data-theme="dark"]) .profile-card p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ====== PROFILE AVATAR ====== */
+body:not([data-theme="dark"]) .profile-avatar {
+    border-color: #ffffff;
+}
+
+body:not([data-theme="dark"]) .avatar-upload-btn {
+    border-color: #ffffff;
+}
+
+/* ====== PROFILE MINI STATS ====== */
+body:not([data-theme="dark"]) .profile-stats-mini {
+    border-top-color: var(--border-color);
+}
+
+body:not([data-theme="dark"]) .stat-mini-value {
+    color: black;
+}
+
+body:not([data-theme="dark"]) .stat-mini-label {
+    color: var(--text-secondary);
+}
+
+/* ====== PROFILE MENU ====== */
+body:not([data-theme="dark"]) .profile-menu-item {
+    color: rgb(22, 185, 109);
+    font-weight: 600;
+}
+
+body:not([data-theme="dark"]) .profile-menu-item:hover {
+    background: var(--bg-tertiary);
+}
+
+/* ====== FILTER CHIPS ====== */
+body:not([data-theme="dark"]) .filter-chip {
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+body:not([data-theme="dark"]) .filter-chip:hover {
+    color: rgb(19, 162, 19);
+    border-color: var(--primary-color);
+    background: rgba(46, 204, 113, 0.06);
+}
+
+/* ====== CRITERIA SIDEBAR ====== */
+body:not([data-theme="dark"]) .criteria-header h3 {
+    color: #08662e;
+    font-weight: 700;
+}
+
+body:not([data-theme="dark"]) .criteria-item {
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-color: var(--border-color);
+}
+
+body:not([data-theme="dark"]) .criteria-item:hover {
+    color: var(--primary-dark);
+}
+
+/* ====== SIZE OPTION ====== */
+body:not([data-theme="dark"]) .size-option.disabled {
+    background: var(--bg-tertiary);
+}
+
+/* ====== ORDERS LIST ====== */
+body:not([data-theme="dark"]) .orders-list {
+    box-shadow: 0 4px 20px rgba(46, 204, 113, 0.08);
+}
+
+body:not([data-theme="dark"]) .order-id {
+    color: #11e265;
+    font-weight: 700;
+}
+
+/* ====== ORDER DETAILS TEXT ====== */
+body:not([data-theme="dark"]) .order-details p {
+    color: black;
+}
+
+body:not([data-theme="dark"]) .order-details p strong {
+    color: black;
+}
+
+body:not([data-theme="dark"]) .order-products-section strong {
+    color: black;
+}
+
+body:not([data-theme="dark"]) .order-product-name {
+    color: #14532d;
+}
+
+/* ====== CART ====== */
+body:not([data-theme="dark"]) .cart-sidebar {
+    border-left: 1px solid var(--border-color);
+}
+
+body:not([data-theme="dark"]) .cart-item-name {
+    color: rgb(129, 183, 156);
+    font-weight: 700;
+}
+
+/* ====== MODAL ====== */
+body:not([data-theme="dark"]) .modal-details h2 {
+    color: #067934;
+    font-weight: 800;
+}
+
+/* ====== CHECKOUT & PAYMENT ====== */
+body:not([data-theme="dark"]) .checkout-container h2,
+body:not([data-theme="dark"]) #paymentWindowTitle { 
+    color: #14532d;
+    font-weight: 700;
+}
+
+/* ====== ROOM INFO ====== */
+body:not([data-theme="dark"]) .room-info-section {
+    border-top-color: var(--border-color);
+}
+
+body:not([data-theme="dark"]) .room-info-section h3 {
+    color: var(--text-primary);
+}
+
+body:not([data-theme="dark"]) .room-info-column {
+    background: var(--bg-secondary);
+}
+
+body:not([data-theme="dark"]) .room-info-column:hover {
+    border-color: var(--primary-color);
+}
+
+body:not([data-theme="dark"]) .room-info-column input {
+    background: var(--bg-primary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+body:not([data-theme="dark"]) .room-info-column input::placeholder {
+    color: var(--text-light);
+}

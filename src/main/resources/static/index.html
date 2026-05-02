@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJCSupply Hub - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ── Splash Screen ── -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-content">
+            <div class="logo-container">
+                <div class="logo-image">
+                    <i class="fas fa-book-open"></i>
+                    <i class="fas fa-pencil-alt"></i>
+                    <i class="fas fa-ruler-combined"></i>
+                </div>
+                <h1>SJC SUPPLY</h1>
+            </div>
+            <p class="tagline">Your Gateway to Quality School Supplies</p>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Main Two-Column Layout ── -->
+    <div class="page-layout" id="mainContainer">
+
+        <!-- LEFT: System Info Card -->
+        <div class="info-side">
+            <div class="info-card">
+
+                <div class="info-header">
+                    <div class="info-logo-wrap">
+                        <img src="logoo.png" alt="SJC Supply"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <span class="info-logo-fallback"><i class="fas fa-boxes"></i></span>
+                    </div>
+                    <span class="info-badge"><i class="fas fa-university"></i> PHINMA Education</span>
+                </div>
+
+                <h2 class="info-title">SJC Supply Hub</h2>
+                <p class="info-subtitle">School Supply Management System</p>
+
+                <p class="info-description">
+                    A centralized platform designed exclusively for SJC students and staff to browse,
+                    order, and manage quality school supplies — all in one secure portal.
+                </p>
+
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <span class="feature-icon"><i class="fas fa-shopping-basket"></i></span>
+                        <div class="feature-text">
+                            <strong>Browse &amp; Order</strong>
+                            <span>Explore a curated catalog of school supplies and place orders with ease</span>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon"><i class="fas fa-shield-alt"></i></span>
+                        <div class="feature-text">
+                            <strong>Secure Access</strong>
+                            <span>Email OTP verification ensures only verified PHINMA accounts can log in</span>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon"><i class="fas fa-chart-line"></i></span>
+                        <div class="feature-text">
+                            <strong>Track Orders</strong>
+                            <span>Monitor your supply requests in real-time from submission to delivery</span>
+                        </div>
+                    </li>
+                
+                </ul>
+
+                <div class="info-footer">
+                    <span class="info-tag"><i class="fas fa-lock"></i> Secure Portal</span>
+                    <span class="info-tag"><i class="fas fa-check-circle"></i> OTP Verified</span>
+                    <span class="info-tag"><i class="fas fa-boxes"></i> Managed Inventory</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT: Login Form Card -->
+        <div class="login-side">
+            <div class="glass-card">
+
+                <div class="form-header">
+                    <div class="logo-small">
+                        <div class="logo-image-small">
+                            <img src="logoo.png" alt="SJC Supply Logo">
+                        </div>
+                        <span>SJC SUPPLY</span>
+                    </div>
+                    <p class="subtitle">Secure School Supplies Portal</p>
+                </div>
+
+                <div class="form-toggle">
+                    <button class="toggle-btn active" id="loginToggle">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <button class="toggle-btn" id="signupToggle">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </button>
+                </div>
+
+                <!-- Login Form -->
+                <form class="form login-form" id="loginForm" method="POST">
+                    <h2><i class="fas fa-lock"></i> Welcome Back</h2>
+
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                        <div class="input-focus-line"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('loginPassword')"></i>
+                        <div class="input-focus-line"></div>
+                    </div>
+
+                    <div class="options">
+                        <label class="checkbox">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password" id="forgotPasswordLink">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Login</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                    <p class="switch-form">
+                        Don't have an account?
+                        <a href="#" id="switchToSignup" class="switch-link">
+                            <span>Sign up</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </form>
+
+                <!-- Sign Up Form -->
+                <form class="form signup-form" id="signupForm" method="POST" style="display: none;">
+                    <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="signupName" placeholder="Full Name" required>
+                        <div class="input-focus-line"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="signupEmail" placeholder="Email address" required>
+                        <div class="input-focus-line"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signupPassword" placeholder="Create password" required>
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('signupPassword')"></i>
+                        <div class="input-focus-line"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('confirmPassword')"></i>
+                        <div class="input-focus-line"></div>
+                    </div>
+
+                    <div class="terms-agreement">
+                        <p>By creating an account, you agree to our
+                            <a href="#" class="terms-link">Terms &amp; Conditions</a> and
+                            <a href="#" class="terms-link">Privacy Policy</a>
+                        </p>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Create Account</span>
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+
+                    <p class="switch-form">
+                        Already have an account?
+                        <a href="#" id="switchToLogin" class="switch-link">
+                            <span>Login</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </form>
+
+                <!-- Forgot Password Form -->
+                <form class="form forgot-form" id="forgotForm" method="POST" style="display: none;">
+                    <h2><i class="fas fa-key"></i> Reset Password</h2>
+                    <p class="instruction">Enter your email address and we'll send you instructions to reset your password.</p>
+
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="forgotEmail" placeholder="Enter your email" required>
+                        <div class="input-focus-line"></div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Send Reset Link</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+
+                    <p class="switch-form">
+                        Remember your password?
+                        <a href="#" id="switchBackToLogin" class="switch-link">
+                            <span>Back to Login</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

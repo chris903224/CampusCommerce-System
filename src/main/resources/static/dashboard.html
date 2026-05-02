@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJCSupplies - School Supplies with AI Chatbot</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="dashboard-light.css">
+    <link rel="stylesheet" href="dashboard-dark.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Dark Mode Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="logoo.png" class="logo-img" alt="SJCSupplies Logo">
+                <span>SJCSupplies</span>
+            </div>
+            
+            <nav class="main-nav">
+                <a href="#" class="nav-link active" data-page="home">Home</a>
+                <a href="#" class="nav-link" data-page="shop">Shop</a>
+                <a href="#" class="nav-link" data-page="orders">My Orders</a>
+                <a href="#" class="nav-link" data-page="profile">My Account</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="Search products..." id="searchInput">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <button class="header-btn cart-btn" id="cartBtn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="header-btn" id="logoutBtn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <span>Menu</span>
+            <button class="close-mobile-menu" id="closeMobileMenu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="mobile-nav">
+            <a href="#" class="mobile-nav-link active" data-page="home">Home</a>
+            <a href="#" class="mobile-nav-link" data-page="shop">Shop</a>
+            <a href="#" class="mobile-nav-link" data-page="orders">My Orders</a>
+            <a href="#" class="mobile-nav-link" data-page="profile">My Account</a>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Welcome to <span>SJCSupplies</span></h1>
+                    <p>Your one-stop shop for quality school supplies</p>
+                    <button class="btn-hero" data-page="shop">Shop Now <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-icon">
+                        <div class="hero-logo-image"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- HOME PAGE -->
+            <div class="page active" id="home">
+                <section class="account-overview">
+                    <h2 class="section-title">Account Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue"><i class="fas fa-shopping-bag"></i></div>
+                            <div class="stat-info">
+                                <h3 id="totalOrders">0</h3>
+                                <p>Total Orders</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+                            <div class="stat-info">
+                                <h3 id="pendingOrders">0</h3>
+                                <p>Pending Orders</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-info">
+                                <h3 id="completedOrders">0</h3>
+                                <p>Completed Orders</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="featured-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Featured Products</h2>
+                        <button class="view-all-btn" data-page="shop">View All <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                    <div class="products-grid" id="featuredProducts"></div>
+                </section>
+            </div>
+
+            <!-- SHOP PAGE -->
+            <div class="page" id="shop">
+                <div class="shop-header">
+                    <h2 class="page-title">School Supplies</h2>
+                    <div class="shop-controls">
+                        <div class="select-wrapper">
+                            <select id="sortFilter" class="filter-select">
+                                <option value="default">Default Sorting</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="name">Name: A-Z</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop-layout">
+                    <aside class="criteria-sidebar">
+                        <div class="criteria-header">
+                            <i class="fas fa-filter"></i>
+                            <h3>Categories</h3>
+                        </div>
+                        <div class="criteria-list">
+                            <button class="criteria-item active" data-category="all">
+                                <div class="criteria-icon"><i class="fas fa-th-large"></i></div>
+                                <span>All Products</span>
+                                <span class="criteria-count" id="countAll">0</span>
+                            </button>
+                            <button class="criteria-item" data-category="paper">
+                                <div class="criteria-icon"><i class="fas fa-file-alt"></i></div>
+                                <span>Paper Products</span>
+                                <span class="criteria-count" id="countPaper">0</span>
+                            </button>
+                            <button class="criteria-item" data-category="writing">
+                                <div class="criteria-icon"><i class="fas fa-pencil-alt"></i></div>
+                                <span>Writing Tools</span>
+                                <span class="criteria-count" id="countWriting">0</span>
+                            </button>
+                            <button class="criteria-item" data-category="coloring">
+                                <div class="criteria-icon"><i class="fas fa-palette"></i></div>
+                                <span>Coloring Materials</span>
+                                <span class="criteria-count" id="countColoring">0</span>
+                            </button>
+                            <button class="criteria-item" data-category="storage">
+                                <div class="criteria-icon"><i class="fas fa-folder"></i></div>
+                                <span>Storage & Organization</span>
+                                <span class="criteria-count" id="countStorage">0</span>
+                            </button>
+                        </div>
+                    </aside>
+
+                    <div class="shop-products">
+                        <div class="active-filter-bar" id="activeFilterBar" style="display: none;">
+                            <span id="activeFilterText">Showing: All Products</span>
+                            <button class="clear-filter-btn" id="clearFilterBtn">
+                                <i class="fas fa-times"></i> Clear Filter
+                            </button>
+                        </div>
+                        <div class="products-grid" id="allProducts"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDERS PAGE -->
+            <div class="page" id="orders">
+                <h2 class="page-title">My Orders</h2>
+                
+                <div class="order-filters">
+                    <button class="filter-chip active" data-status="all">All</button>
+                    <button class="filter-chip" data-status="pending">Pending</button>
+                    <button class="filter-chip" data-status="processing">Processing</button>
+                    <button class="filter-chip" data-status="shipped">Shipped</button>
+                    <button class="filter-chip" data-status="completed">Completed</button>
+                    <button class="filter-chip" data-status="cancelled">Cancelled</button>
+                </div>
+
+                <div class="orders-list" id="ordersList">
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h3>No orders yet</h3>
+                        <p>Start shopping to see your orders here</p>
+                        <button class="btn-primary" data-page="shop">Start Shopping</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE PAGE -->
+            <div class="page" id="profile">
+                <h2 class="page-title">My Account</h2>
+                
+                <div class="profile-container">
+                    <div class="profile-sidebar">
+                        <div class="profile-card">
+                            <div class="profile-avatar-container">
+                                <div class="profile-avatar" id="profileAvatar">
+                                    <i class="fas fa-user-circle" id="avatarIcon"></i>
+                                    <img id="avatarPreview" src="#" alt="Avatar"
+                                         style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                </div>
+                                <label for="avatarUpload" class="avatar-upload-btn" title="Change profile picture">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                                <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                            </div>
+                            <h3 id="profileUserName">Christian Villanueva</h3>
+                            <p id="profileUserEmail">chpe.villanueva.sjc@phinmaed.com</p>
+                            <div class="profile-stats-mini">
+                                <div class="stat-mini-item">
+                                    <span class="stat-mini-value" id="profileTotalOrders">0</span>
+                                    <span class="stat-mini-label">ORDERS</span>
+                                </div>
+                                <div class="stat-mini-item">
+                                    <span class="stat-mini-value" id="profilePendingOrders">0</span>
+                                    <span class="stat-mini-label">PENDING</span>
+                                </div>
+                                <div class="stat-mini-item">
+                                    <span class="stat-mini-value" id="profileCompletedOrders">0</span>
+                                    <span class="stat-mini-label">COMPLETED</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <nav class="profile-menu">
+                            <a href="#" class="profile-menu-item active" data-tab="personal">
+                                <i class="fas fa-user"></i> Personal Information
+                            </a>
+                            <a href="#" class="profile-menu-item" data-tab="security">
+                                <i class="fas fa-lock"></i> Security Settings
+                            </a>
+                        </nav>
+                    </div>
+
+                    <!-- Personal Information Tab -->
+                    <div class="profile-tab active" id="personal">
+                        <div class="form-card">
+                            <h3>Personal Information</h3>
+                            <form id="personalForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Full Name</label>
+                                        <input type="text" id="fullName" placeholder="Enter your full name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email Address</label>
+                                        <input type="email" id="email" placeholder="Enter your email" readonly disabled style="background: #f0f0f0; cursor: not-allowed;">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Phone Number (11 digits only)</label>
+                                        <input type="tel" id="phone" placeholder="e.g., 09123456789" maxlength="11">
+                                        <small style="color: #666; font-size: 11px;">Enter 11 digits (e.g., 09123456789)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Date of Birth</label>
+                                        <input type="date" id="dob">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Student ID (Format: XX-XXXX-XXXXXX)</label>
+                                        <input type="text" id="studentId" placeholder="e.g., 06-2526-004945" maxlength="14">
+                                        <small style="color: #666; font-size: 11px;">Format: 06-2526-004945 (14 characters including dashes)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>School Year (e.g., 2025-2026)</label>
+                                        <input type="text" id="schoolYear" placeholder="e.g., 2025-2026" maxlength="9">
+                                        <small style="color: #666; font-size: 11px;">Format: YYYY-YYYY (e.g., 2025-2026)</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Year Level</label>
+                                        <select id="yearLevel" class="year-level-select">
+                                            <option value="">Select Year Level</option>
+                                            <option value="7th Grade">7th Grade</option>
+                                            <option value="8th Grade">8th Grade</option>
+                                            <option value="9th Grade">9th Grade</option>
+                                            <option value="10th Grade">10th Grade</option>
+                                            <option value="11th Grade">11th Grade</option>
+                                            <option value="12th Grade">12th Grade</option>
+                                            <option value="1st Year College">1st Year College</option>
+                                            <option value="2nd Year College">2nd Year College</option>
+                                            <option value="3rd Year College">3rd Year College</option>
+                                            <option value="4th Year College">4th Year College</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Course/Strand</label>
+                                        <select id="course" class="course-select">
+                                            <option value="">Select Course/Strand</option>
+                                            <optgroup label="College Courses">
+                                                <option value="BSIT">BS Information Technology</option>
+                                                <option value="BSCS">BS Computer Science</option>
+                                                <option value="BSIS">BS Information Systems</option>
+                                                <option value="BSCE">BS Civil Engineering</option>
+                                                <option value="BSME">BS Mechanical Engineering</option>
+                                                <option value="BSBA">BS Business Administration</option>
+                                                <option value="BSA">BS Accountancy</option>
+                                                <option value="BSTM">BS Tourism Management</option>
+                                                <option value="BSEd">BS Education</option>
+                                                <option value="BSN">BS Nursing</option>
+                                                <option value="BSPSY">BS Psychology</option>
+                                                <option value="BSCRIM">BS Criminology</option>
+                                            </optgroup>
+                                            <optgroup label="Senior High School Strands">
+                                                <option value="ABM">Accountancy, Business and Management (ABM)</option>
+                                                <option value="STEM">Science, Technology, Engineering and Mathematics (STEM)</option>
+                                                <option value="GAS">General Academic Strand (GAS)</option>
+                                                <option value="HUMSS">Humanities and Social Sciences (HUMSS)</option>
+                                                <option value="ICT">Information and Communications Technology (ICT)</option>
+                                                <option value="HE">Home Economics (HE)</option>
+                                                <option value="IA">Industrial Arts (IA)</option>
+                                            </optgroup>
+                                            <optgroup label="Junior High School">
+                                                <option value="JHS">Junior High School (Grade 7-10)</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- ROOM INFORMATION -->
+                                <div class="room-info-section">
+                                    <h3><i class="fas fa-door-open"></i> Room Information</h3>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="roomBuilding">Building</label>
+                                            <div class="select-wrapper">
+                                                <select id="roomBuilding" class="building-selector">
+                                                    <option value="">Select Building</option>
+                                                    <option value="Phinma Hall">Phinma Hall</option>
+                                                    <option value="Dimasalang Hall">Dimasalang Hall</option>
+                                                    <option value="Silang Hall">Silang Hall</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="roomNumber">Room Number</label>
+                                            <div class="select-wrapper" id="roomNumberWrapper">
+                                                <select id="roomNumber" class="room-selector" disabled>
+                                                    <option value="">Select Building First</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="specialDelivery">Special Delivery Instructions</label>
+                                        <input type="text" id="specialDelivery"
+                                               placeholder="e.g., Leave at guard house, Call before delivery">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-primary save-room-btn">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- SECURITY TAB - CHANGE PASSWORD -->
+                    <div class="profile-tab" id="security">
+                        <div class="form-card">
+                            <div class="pw-card">
+                                <div class="pw-card-header">
+                                    <div class="pw-header-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="pw-header-text">
+                                        <h3>Change Password</h3>
+                                        <p>Keep your account secure with a strong, unique password</p>
+                                    </div>
+                                </div>
+
+                                <div class="pw-success-banner" id="pwSuccessBanner">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Password updated successfully! Use your new password next time you log in.</span>
+                                </div>
+
+                                <div class="pw-error-banner" id="pwErrorBanner">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span id="pwErrorMessage"></span>
+                                </div>
+
+                                <form id="passwordForm" onsubmit="event.preventDefault(); changePassword(event);">
+                                    <div class="pw-card-body">
+                                        <div class="pw-field">
+                                            <span class="pw-label">Current Password</span>
+                                            <div class="pw-input-wrap">
+                                                <input type="password" id="currentPassword" placeholder="Enter your current password" autocomplete="current-password">
+                                                <button type="button" class="pw-eye-btn" data-target="currentPassword">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <p class="pw-hint" id="currentPasswordHint"></p>
+                                        </div>
+
+                                        <div class="pw-section-divider"></div>
+
+                                        <div class="pw-field">
+                                            <span class="pw-label">New Password</span>
+                                            <div class="pw-input-wrap">
+                                                <input type="password" id="newPassword" placeholder="Create a strong new password" autocomplete="new-password">
+                                                <button type="button" class="pw-eye-btn" data-target="newPassword">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <div class="pw-strength-wrap">
+                                                <div class="pw-strength-bar">
+                                                    <div class="pw-seg" id="pwSeg1"></div>
+                                                    <div class="pw-seg" id="pwSeg2"></div>
+                                                    <div class="pw-seg" id="pwSeg3"></div>
+                                                    <div class="pw-seg" id="pwSeg4"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="pw-field">
+                                            <span class="pw-label">Confirm New Password</span>
+                                            <div class="pw-input-wrap">
+                                                <input type="password" id="confirmPassword" placeholder="Re-enter your new password" autocomplete="new-password">
+                                                <button type="button" class="pw-eye-btn" data-target="confirmPassword">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <p class="pw-hint" id="confirmPasswordHint"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="pw-card-footer">
+                                        <div class="pw-footer-tip">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span>Use a mix of letters, numbers &amp; symbols</span>
+                                        </div>
+                                        <div class="pw-footer-actions">
+                                            <button type="button" class="pw-btn-cancel" id="pwCancelBtn">Cancel</button>
+                                            <button type="submit" class="pw-btn-update" id="pwUpdateBtn" disabled>
+                                                <i class="fas fa-save"></i> Update Password
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Shopping Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <aside class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="cart-close" id="cartClose"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-body" id="cartBody">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal"><span>Subtotal:</span><span id="cartSubtotal">₱0.00</span></div>
+            <div class="cart-total"><span>Total:</span><span id="cartTotal">₱0.00</span></div>
+            <button class="btn-checkout" id="checkoutBtn">
+                <i class="fas fa-lock"></i> Proceed to Checkout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Product Modal -->
+    <div class="product-modal" id="productModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-container">
+            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            <div class="modal-content">
+                <div class="modal-image">
+                    <div class="product-badge">New</div>
+                    <i class="fas fa-file-alt" id="modalProductIcon"></i>
+                </div>
+                <div class="modal-details">
+                    <h2 id="modalProductName">Product Name</h2>
+                    <div class="modal-price" id="modalPrice">₱249.00</div>
+                    <p class="modal-description" id="modalDescription">Product description here.</p>
+
+                    <div class="size-selector">
+                        <h4>Select Size:</h4>
+                        <div class="size-options" id="sizeOptions"></div>
+                    </div>
+
+                    <div class="quantity-selector">
+                        <h4>Quantity:</h4>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" id="qtyMinus"><i class="fas fa-minus"></i></button>
+                            <input type="number" id="modalQuantity" value="1" min="1" max="100">
+                            <button class="qty-btn" id="qtyPlus"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn-add-cart" id="addToCartModal">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+
+                    <div class="product-meta">
+                        <div class="meta-item"><strong>SKU:</strong> <span id="productSKU">EDU-001</span></div>
+                        <div class="meta-item"><strong>Category:</strong> <span id="productCategory">Paper Products</span></div>
+                        <div class="meta-item"><strong>Stock:</strong> <span class="in-stock">In Stock</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-overlay" id="checkoutOverlay"></div>
+        <div class="checkout-container">
+            <button class="checkout-close" id="checkoutClose"><i class="fas fa-times"></i></button>
+            <h2>Checkout</h2>
+
+            <div class="checkout-summary">
+                <p>Total Amount</p>
+                <h3 id="checkoutTotalAmount">₱0.00</h3>
+            </div>
+
+            <h4>Select Payment Method</h4>
+
+            <div class="payment-list">
+                <label class="payment-item">
+                    <input type="radio" name="paymentMethod" value="GCash Manual">
+                    <div class="payment-left">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div>
+                            <strong>Manual GCash</strong>
+                            <div class="payment-note">Send payment to: <strong>09152797837</strong></div>
+                        </div>
+                    </div>
+                </label>
+
+                <label class="payment-item">
+                    <input type="radio" name="paymentMethod" value="GCash QR">
+                    <div class="payment-left">
+                        <i class="fas fa-qrcode"></i>
+                        <div>
+                            <strong>Scan QR Code</strong>
+                            <div class="payment-note">Secure payment</div>
+                        </div>
+                    </div>
+                </label>
+
+                <label class="payment-item">
+                    <input type="radio" name="paymentMethod" value="Cash on Delivery">
+                    <div class="payment-left">
+                        <i class="fas fa-truck"></i>
+                        <div>
+                            <strong>Cash on Delivery</strong>
+                            <div class="payment-note">Pay when the driver arrives</div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <div class="checkout-actions">
+                <button class="btn-secondary" id="btnBackToCart">Back to Cart</button>
+                <button class="btn-primary" id="confirmCheckoutBtn">Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Confirmation Window -->
+    <div class="payment-window" id="paymentWindow">
+        <div class="payment-overlay" id="paymentOverlay"></div>
+        <div class="payment-container">
+            <button class="payment-close" id="paymentClose"><i class="fas fa-times"></i></button>
+            <h2 id="paymentWindowTitle">Confirm Your Order</h2>
+
+            <div class="payment-product-preview">
+                <div class="payment-product-icon" id="paymentProductIcon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <h3 id="paymentProductName">0 item(s)</h3>
+                <p>Total: <strong id="paymentTotalAmount">₱0.00</strong></p>
+            </div>
+
+            <div id="paymentDetailsArea"></div>
+
+            <div class="room-info-section" id="checkoutRoomInfo">
+                <h3><i class="fas fa-door-open"></i> Room Information</h3>
+                <div class="room-info-grid">
+                    <div class="room-info-column">
+                        <label for="confirmBuilding"><i class="fas fa-building"></i> Building</label>
+                        <div class="select-wrapper">
+                            <select id="confirmBuilding" class="building-selector">
+                                <option value="">Select Building</option>
+                                <option value="Phinma Hall">Phinma Hall</option>
+                                <option value="Dimasalang Hall">Dimasalang Hall</option>
+                                <option value="Silang Hall">Silang Hall</option>           
+                            </select>
+                        </div>
+                    </div>
+                    <div class="room-info-column">
+                        <label for="confirmRoomNumber"><i class="fas fa-hashtag"></i> Room No.</label>
+                        <div class="select-wrapper is-disabled" id="confirmRoomWrapper">
+                            <select id="confirmRoomNumber" class="room-selector" disabled>
+                                <option value="">Select Building First</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="room-info-column full-width">
+                        <label for="confirmSpecialDelivery"><i class="fas fa-clipboard-list"></i> Special Delivery</label>
+                        <input type="text" id="confirmSpecialDelivery" placeholder="e.g., Leave at guard house">
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-confirm-section">
+                <label>
+                    <input type="checkbox" id="paymentCheckbox">
+                    I confirm that I have completed the payment
+                </label>
+            </div>
+
+            <div class="payment-actions">
+                <button class="btn-secondary" id="cancelPaymentBtn">Cancel</button>
+                <button class="btn-primary" id="finalConfirmBtn">Confirm Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GCASH QR MODAL -->
+    <div class="gcash-qr-modal" id="gcashQrModal">
+        <div class="gcash-qr-overlay" id="gcashQrOverlay"></div>
+        <div class="gcash-qr-container">
+            <button class="gcash-qr-close" id="gcashQrClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 class="gcash-qr-title">G CASH QR CODE</h2>
+            
+            <div class="gcash-qr-code-wrapper">
+                <img src="qrcode.png" alt="GCash QR Code" id="gcashQrImage" class="gcash-qr-image">
+            </div>
+            
+            <div class="gcash-number-display">
+                <i class="fas fa-mobile-alt"></i>
+                <span>GCash Number: <strong>09152797837</strong></span>
+            </div>
+            
+            <div class="gcash-payment-proof">
+                <p class="proof-label">Upload Proof of Payment:</p>
+                <div class="proof-upload-area" id="proofUploadArea">
+                    <input type="file" id="proofImageInput" accept="image/*" style="display: none;">
+                    <button class="select-picture-btn" id="selectPictureBtn">
+                        <i class="fas fa-image"></i> Select Picture
+                    </button>
+                    <div class="proof-preview" id="proofPreview" style="display: none;">
+                        <img id="proofPreviewImage" src="#" alt="Preview">
+                        <label class="proof-checkbox">
+                            <input type="checkbox" id="proofConfirmed"> I confirm this is my payment receipt
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gcash-qr-actions">
+                <button class="btn-done" id="gcashDoneBtn" disabled>
+                    <i class="fas fa-check-circle"></i> Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-box">
+            <i class="fas fa-check-circle"></i>
+            <h1>ORDER PLACED SUCCESSFULLY!</h1>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <!-- AI CHATBOT WIDGET -->
+    <div class="chatbot-widget" id="chatbotWidget">
+        <div class="chatbot-button" id="chatbotButton">
+            <div class="chatbot-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <span class="chatbot-label">Chat With<br>SJC AI</span>
+            <div class="chatbot-pulse"></div>
+        </div>
+        
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <div class="chatbot-header-info">
+                    <div class="chatbot-avatar">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=SJC&backgroundColor=2ecc71" alt="SJC AI">
+                    </div>
+                    <div class="chatbot-header-text">
+                        <h3>SJC AI Assistant</h3>
+                        <p>Online • Ready to help</p>
+                    </div>
+                </div>
+                <button class="chatbot-close" id="chatbotClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="chatbot-message bot">
+                    <div class="message-avatar">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=SJC&backgroundColor=2ecc71" alt="SJC AI">
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            Hello! 👋 Welcome to SJC Supplies!<br><br>
+                            I'm your AI shopping assistant. I can help you with:<br>
+                            📦 Finding products<br>
+                            💰 Checking prices<br>
+                            📍 Tracking orders<br>
+                            🎓 School supplies recommendations<br><br>
+                            How can I help you today?
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chatbot-typing" id="chatbotTyping">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+            
+            <div class="chatbot-input-area">
+                <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Type your message...">
+                <button class="chatbot-send" id="chatbotSend">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

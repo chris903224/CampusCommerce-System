@@ -1,0 +1,150 @@
+# ==================== SERVER ====================
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# ==================== SPRING PROFILE ====================
+spring:
+  profiles:
+    active: ${SPRING_PROFILE:dev}
+  
+  application:
+    name: backend
+  
+  # ==================== DATABASE (PostgreSQL) ====================
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/edusupplydb}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:Chris123}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+      minimum-idle: ${DB_MIN_IDLE:5}
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  
+  # ==================== JPA ====================
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: ${JPA_DDL:update}
+    show-sql: ${JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+  
+  # ==================== GMAIL CONFIG ====================
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_USERNAME:suppliessjc@gmail.com}
+    password: ${GMAIL_APP_PASSWORD:esrxyvzlwoplnlku}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+  
+  # ==================== THREADING ====================
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 10
+        queue-capacity: 100
+      thread-name-prefix: backend-task-
+  
+  # ==================== FILE UPLOAD ====================
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      enabled: true
+  
+  # ==================== OUTPUT ====================
+  output:
+    ansi:
+      enabled: always
+
+# ==================== LOGGING ====================
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+    com.example.backend: ${APP_LOG_LEVEL:DEBUG}
+    org.springframework.security: ${SECURITY_LOG_LEVEL:INFO}
+    org.hibernate.SQL: ${HIBERNATE_SQL_LOG:INFO}
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  file:
+    name: ${LOG_FILE:./logs/application.log}
+    max-size: 10MB
+    max-history: 30
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# ==================== JWT CONFIGURATION ====================
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  expiration: ${JWT_EXPIRATION:86400000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+
+# ==================== OTP CONFIGURATION ====================
+otp:
+  expiration-minutes: ${OTP_EXPIRATION:5}
+  length: ${OTP_LENGTH:6}
+
+# ==================== PAYMONGO CONFIGURATION ====================
+paymongo:
+  secret:
+    key: ${PAYMONGO_SECRET_KEY:sk_live_6GZrLzxkqw1n1uqiNQsniGxa}
+  public:
+    key: ${PAYMONGO_PUBLIC_KEY:pk_live_JKroTHNt5Nc48ekUHvavytfb}
+  api:
+    url: ${PAYMONGO_API_URL:https://api.paymongo.com/v1}
+  webhook:
+    secret: ${PAYMONGO_WEBHOOK_SECRET:}
+
+# ==================== CORS CONFIGURATION ====================
+cors:
+  allowed-origins: ${CORS_ORIGINS:http://localhost:8080,http://localhost:3000}
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: Authorization,Content-Type,X-Requested-With,Accept,Origin
+  allow-credentials: true
+
+# ==================== SPRINGDOC OPENAPI ====================
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:true}
+    path: /api-docs
+  swagger-ui:
+    enabled: ${SWAGGER_UI_ENABLED:true}
+    path: /swagger-ui.html
+  packages-to-scan: com.example.backend.controller
+  paths-to-match: /api/**
+
+# ==================== ACTUATOR (for monitoring) ====================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${ACTUATOR_ENDPOINTS:health,info,metrics}
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: ${PROMETHEUS_ENABLED:false}

@@ -1,0 +1,321 @@
+/* ================================================
+   dashboard-dark.css — DARK MODE ONLY
+   Applied when [data-theme="dark"] is set on html/body
+   ================================================ */
+
+/* ====== CSS VARIABLES — DARK MODE ====== */
+[data-theme="dark"] {
+    --primary-color: #1fff7c;
+    --primary-dark: #27c769;
+    --secondary-color: #f1c40f;
+    --accent-yellow: #f39c12;
+    --dark-color: #332020;
+    --light-color: #1a1a1a;
+    --bg-primary: #1a2028;
+    --bg-secondary: #1a2028;
+    --bg-tertiary: #1e2c38;
+    --text-primary: #e8e8e8;
+    --text-secondary: #ecf2ef;
+    --text-light: white;
+    --success-color: rgb(241, 241, 241);
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --border-color: #2e4535;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --gradient-primary: linear-gradient(135deg, #070707 0%, #29d06e 100%);
+    --gradient-hero: linear-gradient(135deg, #2bffb8 0%, #1e8449 50%, #27ae60 100%);
+    --gradient-card: linear-gradient(145deg, #006eff 0%, #1e3028 100%);
+}
+
+/* ====== BODY ====== */
+[data-theme="dark"] body,
+body[data-theme="dark"] {
+    background: #1a2028;
+    letter-spacing: 0.15px;
+}
+
+/* ====== HEADER ====== */
+[data-theme="dark"] .header {
+    background: #1a2028 !important;
+    border-bottom: 2px solid #2e4535 !important;
+}
+
+/* ====== LOGO ====== */
+[data-theme="dark"] .logo span {
+    font-weight: 800;
+    background: rgb(9, 203, 100);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+[data-theme="dark"] .logo-img {
+    filter: drop-shadow(0 2px 6px rgba(46, 204, 113, 0.3));
+}
+
+/* ====== NAV LINKS ====== */
+[data-theme="dark"] .nav-link {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .nav-link.active {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+[data-theme="dark"] .nav-link:hover {
+    color: var(--primary-color);
+}
+
+/* ====== SEARCH BOX ====== */
+[data-theme="dark"] .search-box {
+    background: #1e2c38;
+    border: 2px solid #2e4535;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ====== SECTION TITLES ====== */
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .page-title {
+    color: #39ff5a;
+    letter-spacing: -0.3px;
+}
+
+/* ====== STAT CARDS ====== */
+[data-theme="dark"] .stat-card {
+    border-left: 4px solid var(--primary-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .stat-info h3 {
+    color: var(--primary-color);
+    font-size: 42px;
+}
+
+[data-theme="dark"] .stat-info p {
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* ====== PRODUCT CARDS ====== */
+[data-theme="dark"] .product-card {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid #2e4535;
+}
+/* ====== PRODUCT CARDS ====== */
+[data-theme="dark"] .product-card:hover {
+    box-shadow: 0 12px 40px rgba(46, 204, 113, 0.35);
+}
+[data-theme="dark"] .product-name {
+    color: #e8e8e8;
+    font-weight: 700;
+}
+
+[data-theme="dark"] .product-category {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* ====== NO IMAGE ====== */
+[data-theme="dark"] .no-image {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+[data-theme="dark"] .no-image i {
+    color: #718096;
+}
+
+/* ====== FORM CARD & PROFILE CARD HEADINGS ====== */
+[data-theme="dark"] .form-card h3 {
+    color: var(--primary-color);
+    font-weight: 700;
+    letter-spacing: 0.2px;
+
+
+}
+[data-theme="dark"] .profile-card h3 {
+    color: #deeee5;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+}
+
+/* ====== FORM LABELS ====== */
+[data-theme="dark"] .form-group label {
+    color: #3fe972 !important;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+}
+
+/* ====== FORM INPUTS ====== */
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+    color: #050608 !important;
+    background: #e0e3e6 !important;
+}
+
+[data-theme="dark"] .form-group input::placeholder,
+[data-theme="dark"] .form-group select::placeholder,
+[data-theme="dark"] .form-group textarea::placeholder {
+    color: #000000 !important;
+}
+
+/* ====== PROFILE CARD ====== */
+[data-theme="dark"] .profile-card p {
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ====== PROFILE AVATAR ====== */
+[data-theme="dark"] .profile-avatar {
+    border-color: #2d3748;
+}
+
+[data-theme="dark"] .avatar-upload-btn {
+    border-color: #2d3748;
+}
+
+/* ====== PROFILE MINI STATS ====== */
+[data-theme="dark"] .profile-stats-mini {
+    border-top-color: #0055e8;
+}
+
+[data-theme="dark"] .stat-mini-value {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .stat-mini-label {
+    color: #ffffff;
+}
+
+/* ====== PROFILE MENU ====== */
+[data-theme="dark"] .profile-menu-item {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+[data-theme="dark"] .profile-menu-item:hover {
+    background: #2d3748;
+}
+
+/* ====== FILTER CHIPS ====== */
+[data-theme="dark"] .filter-chip {
+    border-color: #2e4535;
+    color: var(--text-primary);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+[data-theme="dark"] .filter-chip:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background: rgba(46, 204, 113, 0.08);
+}
+
+/* ====== CRITERIA SIDEBAR ====== */
+[data-theme="dark"] .criteria-header h3 {
+    color: #2ecc71;
+    font-weight: 700;
+}
+
+[data-theme="dark"] .criteria-item {
+    color: var(--text-primary);
+    font-weight: 600;
+    border-color: #2e4535;
+}
+
+[data-theme="dark"] .criteria-item:hover {
+    color: var(--primary-color);
+}
+
+/* ====== SIZE OPTION ====== */
+[data-theme="dark"] .size-option.disabled {
+    background: #2d3748;
+}
+
+/* ====== ORDERS LIST ====== */
+[data-theme="dark"] .orders-list {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .order-id {
+    color: #2ecc71;
+    font-weight: 700;
+}
+
+/* ====== ORDER DETAILS TEXT ====== */
+[data-theme="dark"] .order-details p {
+    color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .order-details p strong {
+    color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .order-products-section strong {
+    color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .order-product-name {
+    color: #e2e8f0 !important;
+}
+
+/* ====== CART ====== */
+[data-theme="dark"] .cart-sidebar {
+    border-left: 1px solid #2e4535;
+}
+
+[data-theme="dark"] .cart-item-name {
+    color: #e8e8e8;
+    font-weight: 700;
+}
+
+/* ====== MODAL ====== */
+[data-theme="dark"] .modal-details h2 {
+    color: #2ecc71;
+    font-weight: 800;
+}
+
+/* ====== CHECKOUT & PAYMENT ====== */
+[data-theme="dark"] .checkout-container h2,
+[data-theme="dark"] #paymentWindowTitle {
+    color: #2ecc71;
+    font-weight: 700;
+}
+
+/* ====== ROOM INFO ====== */
+[data-theme="dark"] .room-info-section {
+    border-top-color: #4a5568;
+}
+
+[data-theme="dark"] .room-info-section h3 {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .room-info-column {
+    background: #2d3748;
+}
+
+[data-theme="dark"] .room-info-column:hover {
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .room-info-column input {
+    background: #1a202c;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .room-info-column input::placeholder {
+    color: #718096;
+}

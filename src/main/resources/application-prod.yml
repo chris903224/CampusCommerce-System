@@ -1,0 +1,53 @@
+# ==================== PRODUCTION CONFIGURATION ====================
+# ALL sensitive values come from environment variables!
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  mail:
+    username: ${GMAIL_USERNAME}
+    password: ${GMAIL_APP_PASSWORD}
+
+logging:
+  level:
+    com.example.backend: INFO
+    org.springframework.security: WARN
+  file:
+    name: /var/log/backend/application.log
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 3600000
+
+paymongo:
+  secret:
+    key: ${PAYMONGO_SECRET_KEY}
+  public:
+    key: ${PAYMONGO_PUBLIC_KEY}
+
+swagger:
+  enabled: false
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+server:
+  port: ${PORT:8080}
+
+cors:
+  allowed-origins: ${CORS_ORIGINS}
