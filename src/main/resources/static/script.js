@@ -125,24 +125,43 @@ const utils = {
     
     validatePhinmaEmail: (email) => email.endsWith('@phinmaed.com'),
     
+    // ✅ FIXED FULL NAME VALIDATION - More flexible
     validateFullName: (name) => {
-        if (!name || !name.trim()) return 'Please enter your full name';
+        if (!name || !name.trim()) {
+            return 'Please enter your full name';
+        }
         
-        const words = name.trim().split(/\s+/);
-        if (words.length < 2) return 'Please enter both first name and last name';
+        // Remove extra spaces and trim
+        const cleanName = name.trim().replace(/\s+/g, ' ');
+        const words = cleanName.split(' ');
         
+        if (words.length < 2) {
+            return 'Please enter both first name and last name';
+        }
+        
+        if (words.length > 4) {
+            return 'Please enter a valid name (max 4 words)';
+        }
+        
+        // Check each word has at least 2 characters
         for (let word of words) {
-            if (!/^[A-Z][a-z]*$/.test(word)) {
-                return 'First letter must be capitalized (e.g., "Christian")';
+            if (word.length < 2) {
+                return `"${word}" is too short. Please enter full name properly.`;
             }
         }
-        return 'VALID';
+        
+        // Auto-format the name (capitalize first letter of each word)
+        const formattedName = words.map(word => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }).join(' ');
+        
+        return { isValid: true, formattedName: formattedName };
     },
     
     formatFullName: (name) => {
-        return name.trim().split(/\s+/)
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-            .join(' ');
+        const cleanName = name.trim().replace(/\s+/g, ' ');
+        const words = cleanName.split(' ');
+        return words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
     },
     
     validatePassword: (password) => {
@@ -531,7 +550,6 @@ function redirectToDashboard() {
 const handlers = {
     // ✅ FIXED LOGIN HANDLER - REMOVED REMEMBER ME CONDITION
     login: async (e) => {
-        // Prevent page refresh and 405 error
         e.preventDefault();
         e.stopPropagation();
         
@@ -539,24 +557,20 @@ const handlers = {
         
         const email = elements.loginEmail.value;
         const password = elements.loginPassword.value;
-        // Remember me is optional - no longer required
         const rememberMe = elements.rememberMe?.checked || false;
         
         console.log('📝 Login attempt:', { email, rememberMe: rememberMe ? 'Yes' : 'No' });
         
-        // Email validation
         if (!utils.validateEmail(email)) {
             utils.showToast('Invalid email address', 'error');
             return;
         }
         
-        // PHINMA email validation
         if (!utils.validatePhinmaEmail(email)) {
             utils.showToast('Only @phinmaed.com emails allowed', 'error');
             return;
         }
         
-        // Password validation
         if (!password || password.length < 6) {
             utils.showToast('Password must be at least 6 characters', 'error');
             return;
@@ -582,7 +596,6 @@ const handlers = {
             if (response.ok && data.success) {
                 utils.showToast('✅ Login successful!', 'success');
                 
-                // Save user info
                 localStorage.setItem('savedEmail', email);
                 localStorage.setItem('userEmail', data.email || email);
                 if (data.userId) localStorage.setItem('userId', data.userId);
@@ -590,7 +603,6 @@ const handlers = {
                 if (data.name) localStorage.setItem('userName', data.name);
                 if (data.token) localStorage.setItem('token', data.token);
                 
-                // Redirect to dashboard after short delay
                 setTimeout(() => {
                     redirectToDashboard();
                 }, 500);
@@ -613,6 +625,7 @@ const handlers = {
         }
     },
     
+    // ✅ FIXED REGISTER HANDLER - WITH IMPROVED NAME VALIDATION
     register: async (e) => {
         e.preventDefault();
         
@@ -626,13 +639,26 @@ const handlers = {
         const password = elements.signupPassword.value;
         const confirmPassword = elements.confirmPassword.value;
         
+        // ✅ FIXED: Using the improved validation
         const nameValidation = utils.validateFullName(name);
-        if (nameValidation !== 'VALID') {
+        
+        if (typeof nameValidation === 'string') {
             utils.showToast(nameValidation, 'error');
             return;
         }
         
-        const formattedName = utils.formatFullName(name);
+        if (!nameValidation.isValid) {
+            utils.showToast(nameValidation.message, 'error');
+            return;
+        }
+        
+        // Use the formatted name
+        const formattedName = nameValidation.formattedName;
+        
+        // Optional: Update the input field with formatted name
+        if (elements.signupName && formattedName !== name) {
+            elements.signupName.value = formattedName;
+        }
         
         if (!utils.validateEmail(email)) {
             utils.showToast('Invalid email address', 'error');
@@ -811,9 +837,7 @@ function initializeEventListeners() {
         });
     }
     
-    // ✅ FIXED LOGIN FORM EVENT LISTENER
     if (elements.loginForm) {
-        // Remove any existing listeners to prevent duplicates
         const newLoginForm = elements.loginForm.cloneNode(true);
         elements.loginForm.parentNode.replaceChild(newLoginForm, elements.loginForm);
         elements.loginForm = newLoginForm;
