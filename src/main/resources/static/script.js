@@ -1,19 +1,23 @@
 // ==================== API CONFIGURATION ====================
-// Detect if running on ngrok, localhost, or railway
-const isNgrok = window.location.hostname.includes('ngrok-free.dev');
-const isRailway = window.location.hostname.includes('up.railway.app');
+// Detect environment (local, railway, etc.)
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isRailway = window.location.hostname.includes('up.railway.app');
+const isNgrok = window.location.hostname.includes('ngrok-free.dev');
 
 let API_BASE_URL;
 
 if (isRailway) {
-    API_BASE_URL = 'https://' + window.location.hostname + '/api';
+    // Railway: use root URL without /api (controller has /api/auth)
+    API_BASE_URL = 'https://' + window.location.hostname;
 } else if (isLocalhost) {
-    API_BASE_URL = 'http://localhost:8080/api';
+    // Local development
+    API_BASE_URL = 'http://localhost:8080';
 } else if (isNgrok) {
-    API_BASE_URL = '/api';
+    // Ngrok tunnel
+    API_BASE_URL = 'https://' + window.location.hostname;
 } else {
-    API_BASE_URL = '/api';
+    // Default fallback
+    API_BASE_URL = window.location.protocol + '//' + window.location.hostname;
 }
 
 console.log('🔧 API_BASE_URL:', API_BASE_URL);
@@ -32,16 +36,19 @@ const CONFIG = {
 };
 
 // ==================== API ENDPOINTS ====================
+// Note: Controller has @RequestMapping("/api/auth") so endpoints are /api/auth/xxx
 const ENDPOINTS = {
-    TEST: `${CONFIG.API_BASE_URL}/auth/test`,
-    LOGIN: `${CONFIG.API_BASE_URL}/auth/login`,
-    REGISTER: `${CONFIG.API_BASE_URL}/auth/register`,
-    FORGOT_PASSWORD: `${CONFIG.API_BASE_URL}/auth/forgot-password`,
-    VERIFY_OTP: `${CONFIG.API_BASE_URL}/auth/verify-otp`,
-    RESEND_OTP: `${CONFIG.API_BASE_URL}/auth/resend-otp`,
-    CHECK_EMAIL: `${CONFIG.API_BASE_URL}/auth/check-email`,
-    SESSION_CHECK: `${CONFIG.API_BASE_URL}/auth/session-check`
+    TEST: `${API_BASE_URL}/api/auth/test`,
+    LOGIN: `${API_BASE_URL}/api/auth/login`,
+    REGISTER: `${API_BASE_URL}/api/auth/register`,
+    FORGOT_PASSWORD: `${API_BASE_URL}/api/auth/forgot-password`,
+    VERIFY_OTP: `${API_BASE_URL}/api/auth/verify-otp`,
+    RESEND_OTP: `${API_BASE_URL}/api/auth/resend-otp`,
+    CHECK_EMAIL: `${API_BASE_URL}/api/auth/check-email`,
+    SESSION_CHECK: `${API_BASE_URL}/api/auth/check-session`
 };
+
+console.log('📡 ENDPOINTS:', ENDPOINTS);
 
 // ==================== DOM ELEMENTS ====================
 const elements = {
@@ -95,24 +102,17 @@ async function checkBackendSession() {
         
         console.log('📡 Session check response status:', response.status);
         
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('text/html')) {
-            console.warn('⚠️ Server returned HTML instead of JSON - endpoint may not exist yet');
-            return null;
-        }
-        
         if (response.ok) {
             const data = await response.json();
-            console.log('✅ Active session found:', data);
-            return data;
+            if (data && data.success !== false) {
+                console.log('✅ Active session found:', data);
+                return data;
+            }
         }
         
-        if (response.status === 401 || response.status === 403) {
-            console.log('ℹ️ No active session (401/403 response)');
-            return null;
-        }
-        
+        console.log('ℹ️ No active session');
         return null;
+        
     } catch (error) {
         console.log('ℹ️ Session check skipped:', error.message);
         return null;
@@ -125,13 +125,12 @@ const utils = {
     
     validatePhinmaEmail: (email) => email.endsWith('@phinmaed.com'),
     
-    // ✅ FIXED FULL NAME VALIDATION - More flexible
+    // Full name validation - flexible
     validateFullName: (name) => {
         if (!name || !name.trim()) {
             return 'Please enter your full name';
         }
         
-        // Remove extra spaces and trim
         const cleanName = name.trim().replace(/\s+/g, ' ');
         const words = cleanName.split(' ');
         
@@ -143,14 +142,12 @@ const utils = {
             return 'Please enter a valid name (max 4 words)';
         }
         
-        // Check each word has at least 2 characters
         for (let word of words) {
             if (word.length < 2) {
                 return `"${word}" is too short. Please enter full name properly.`;
             }
         }
         
-        // Auto-format the name (capitalize first letter of each word)
         const formattedName = words.map(word => {
             return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         }).join(' ');
@@ -369,8 +366,7 @@ const otpHandler = {
             const response = await fetch(ENDPOINTS.VERIFY_OTP, {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json',
-                    'ngrok-skip-browser-warning': 'true'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     email: state.currentUserEmail,
@@ -431,8 +427,7 @@ const otpHandler = {
             const response = await fetch(ENDPOINTS.RESEND_OTP, {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json',
-                    'ngrok-skip-browser-warning': 'true'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ 
                     email: state.currentUserEmail,
@@ -454,7 +449,7 @@ const otpHandler = {
             
             if (resendBtn) {
                 resendBtn.disabled = false;
-                resendBtn.innerHTML = '<i class="fas fa-redo"></i>';
+                resendBtn.innerHTML = originalText;
             }
         } catch (error) {
             console.error('❌ Resend error:', error);
@@ -463,7 +458,7 @@ const otpHandler = {
             
             if (resendBtn) {
                 resendBtn.disabled = false;
-                resendBtn.innerHTML = '<i class="fas fa-redo"></i>';
+                resendBtn.innerHTML = originalText;
             }
         }
     }
@@ -493,8 +488,7 @@ const api = {
             const response = await fetch(ENDPOINTS.REGISTER, {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json',
-                    'ngrok-skip-browser-warning': 'true'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ 
                     fullName: fullName,
@@ -517,8 +511,7 @@ const api = {
         const response = await fetch(ENDPOINTS.FORGOT_PASSWORD, {
             method: 'POST',
             headers: { 
-                'Content-Type': 'application/json',
-                'ngrok-skip-browser-warning': 'true'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email })
         });
@@ -529,8 +522,7 @@ const api = {
         const response = await fetch(ENDPOINTS.CHECK_EMAIL, {
             method: 'POST',
             headers: { 
-                'Content-Type': 'application/json',
-                'ngrok-skip-browser-warning': 'true'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email })
         });
@@ -548,7 +540,6 @@ function redirectToDashboard() {
 
 // ==================== EVENT HANDLERS ====================
 const handlers = {
-    // ✅ FIXED LOGIN HANDLER - REMOVED REMEMBER ME CONDITION
     login: async (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -625,7 +616,6 @@ const handlers = {
         }
     },
     
-    // ✅ FIXED REGISTER HANDLER - WITH IMPROVED NAME VALIDATION
     register: async (e) => {
         e.preventDefault();
         
@@ -639,7 +629,6 @@ const handlers = {
         const password = elements.signupPassword.value;
         const confirmPassword = elements.confirmPassword.value;
         
-        // ✅ FIXED: Using the improved validation
         const nameValidation = utils.validateFullName(name);
         
         if (typeof nameValidation === 'string') {
@@ -652,10 +641,8 @@ const handlers = {
             return;
         }
         
-        // Use the formatted name
         const formattedName = nameValidation.formattedName;
         
-        // Optional: Update the input field with formatted name
         if (elements.signupName && formattedName !== name) {
             elements.signupName.value = formattedName;
         }
@@ -841,7 +828,6 @@ function initializeEventListeners() {
         const newLoginForm = elements.loginForm.cloneNode(true);
         elements.loginForm.parentNode.replaceChild(newLoginForm, elements.loginForm);
         elements.loginForm = newLoginForm;
-        
         elements.loginForm.addEventListener('submit', handlers.login);
     }
     
@@ -849,7 +835,6 @@ function initializeEventListeners() {
         const newSignupForm = elements.signupForm.cloneNode(true);
         elements.signupForm.parentNode.replaceChild(newSignupForm, elements.signupForm);
         elements.signupForm = newSignupForm;
-        
         elements.signupForm.addEventListener('submit', handlers.register);
     }
     
@@ -857,7 +842,6 @@ function initializeEventListeners() {
         const newForgotForm = elements.forgotForm.cloneNode(true);
         elements.forgotForm.parentNode.replaceChild(newForgotForm, elements.forgotForm);
         elements.forgotForm = newForgotForm;
-        
         elements.forgotForm.addEventListener('submit', handlers.forgotPassword);
     }
 }
@@ -875,7 +859,7 @@ async function initialize() {
     if (isLoginPage) {
         try {
             const sessionData = await checkBackendSession();
-            if (sessionData && sessionData.authenticated === true && !state.isRedirecting) {
+            if (sessionData && (sessionData.authenticated === true || sessionData.userId) && !state.isRedirecting) {
                 console.log('✅ Existing session found, redirecting to dashboard');
                 redirectToDashboard();
                 return;
@@ -883,8 +867,6 @@ async function initialize() {
         } catch (err) {
             console.log('ℹ️ Session check failed gracefully:', err.message);
         }
-    } else {
-        console.log('ℹ️ Not on login page, skipping session redirect check');
     }
     
     const savedEmail = localStorage.getItem('savedEmail');
@@ -900,20 +882,16 @@ async function initialize() {
         }, CONFIG.WELCOME_SCREEN_DURATION);
     }
     
-    fetch(ENDPOINTS.TEST, {
-        headers: {
-            'ngrok-skip-browser-warning': 'true'
-        },
-        credentials: 'include'
-    })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            throw new Error('Backend not ready');
-        })
-        .then(data => console.log('✅ Backend connected:', data))
-        .catch(err => console.log('ℹ️ Backend test:', err.message));
+    // Test backend connection
+    try {
+        const testResponse = await fetch(ENDPOINTS.TEST);
+        if (testResponse.ok) {
+            const data = await testResponse.json();
+            console.log('✅ Backend connected:', data);
+        }
+    } catch (err) {
+        console.log('ℹ️ Backend test:', err.message);
+    }
 }
 
 // ==================== EXPOSE GLOBALLY ====================
