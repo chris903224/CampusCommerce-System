@@ -1,6 +1,12 @@
 // admin.js - Complete Admin Dashboard with all features (with Backend Face Recognition)
+// ============================================
+// API Configuration - FOR RAILWAY (FIXED)
+// ============================================
+// Gamitin ang current hostname para sa API calls
+const API_BASE = window.location.protocol + '//' + window.location.hostname + '/api/admin';
 
-const API_BASE = 'http://localhost:8080/api/admin';
+console.log('🔧 API_BASE:', API_BASE);
+console.log('🌐 Current Host:', window.location.hostname);
 
 // ============= CHECK AUTHENTICATION =============
 (function checkAuth() {
