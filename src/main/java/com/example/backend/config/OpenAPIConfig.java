@@ -23,9 +23,14 @@ public class OpenAPIConfig {
                 .contact(new Contact()
                     .name("SJC Supply Support")
                     .email("suppliessjc@gmail.com")))
+            // DEVELOPMENT SERVER
             .addServersItem(new Server()
                 .url("http://localhost:8080")
                 .description("Development Server"))
+            // PRODUCTION SERVER (RAILWAY) - IDAGDAG ITO
+            .addServersItem(new Server()
+                .url("https://sjc-supplies.up.railway.app")
+                .description("Production Server (Railway)"))
             .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
             .components(new Components()
                 .addSecuritySchemes("bearerAuth",
