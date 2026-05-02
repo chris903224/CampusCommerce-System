@@ -1,46 +1,48 @@
 package com.example.backend.service;
 
-import com.sendgrid.*;
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
-import com.sendgrid.helpers.mail.objects.Email;
+import com.resend.Resend;
+import com.resend.core.exception.ResendException;
+import com.resend.services.emails.model.SendEmailRequest;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
 
 @Service
 public class EmailService {
 
-    @Value("${sendgrid.api.key}")
+    @Value("${resend.api.key}")
     private String apiKey;
     
-    @Value("${mail.from:suppliessjc@gmail.com}")
+    @Value("${mail.from:onboarding@resend.dev}")
     private String fromEmail;
 
-    // Send OTP email via SendGrid
+    private Resend resend;
+
+    @PostConstruct
+    public void init() {
+        resend = new Resend(apiKey);
+    }
+
+    // Send OTP email via Resend
     public void sendHtmlOtpEmail(String toEmail, String otpCode, String purpose) {
-        System.out.println("📧 Sending OTP via SendGrid to: " + toEmail);
+        System.out.println("📧 Sending OTP via Resend to: " + toEmail);
         System.out.println("🔑 OTP Code: " + otpCode);
         
         String subject = getSubject(purpose);
         String htmlContent = getOtpHtmlTemplate(otpCode, purpose);
-        
-        Email from = new Email(fromEmail);
-        Email to = new Email(toEmail);
-        Content content = new Content("text/html", htmlContent);
-        Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid(apiKey);
-        Request request = new Request();
-        
+        SendEmailRequest request = SendEmailRequest.builder()
+                .from(fromEmail)
+                .to(toEmail)
+                .subject(subject)
+                .html(htmlContent)
+                .build();
+
         try {
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            Response response = sg.api(request);
-            System.out.println("✅ OTP email sent via SendGrid. Status: " + response.getStatusCode());
-        } catch (IOException ex) {
-            System.err.println("❌ SendGrid error: " + ex.getMessage());
+            resend.emails().send(request);
+            System.out.println("✅ OTP email sent via Resend. Status: 200 OK");
+        } catch (ResendException e) {
+            System.err.println("❌ Resend error: " + e.getMessage());
         }
     }
     
@@ -55,23 +57,19 @@ public class EmailService {
             "<br/><p>Best regards,<br/>SJC Supply Team</p></div>",
             name
         );
-        
-        Email from = new Email(fromEmail);
-        Email to = new Email(toEmail);
-        Content content = new Content("text/html", htmlContent);
-        Mail mail = new Mail(from, "🎉 Welcome to SJC Supply Hub!", to, content);
 
-        SendGrid sg = new SendGrid(apiKey);
-        Request request = new Request();
-        
+        SendEmailRequest request = SendEmailRequest.builder()
+                .from(fromEmail)
+                .to(toEmail)
+                .subject("🎉 Welcome to SJC Supply Hub!")
+                .html(htmlContent)
+                .build();
+
         try {
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            Response response = sg.api(request);
-            System.out.println("✅ Welcome email sent. Status: " + response.getStatusCode());
-        } catch (IOException ex) {
-            System.err.println("❌ SendGrid error: " + ex.getMessage());
+            resend.emails().send(request);
+            System.out.println("✅ Welcome email sent via Resend");
+        } catch (ResendException e) {
+            System.err.println("❌ Resend error: " + e.getMessage());
         }
     }
     
@@ -87,23 +85,19 @@ public class EmailService {
             "<br/><p>If you did not request this, please ignore this email.</p></div>",
             name, otpCode
         );
-        
-        Email from = new Email(fromEmail);
-        Email to = new Email(toEmail);
-        Content content = new Content("text/html", htmlContent);
-        Mail mail = new Mail(from, "🔐 Password Reset Request", to, content);
 
-        SendGrid sg = new SendGrid(apiKey);
-        Request request = new Request();
-        
+        SendEmailRequest request = SendEmailRequest.builder()
+                .from(fromEmail)
+                .to(toEmail)
+                .subject("🔐 Password Reset Request")
+                .html(htmlContent)
+                .build();
+
         try {
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            Response response = sg.api(request);
-            System.out.println("✅ Password reset email sent. Status: " + response.getStatusCode());
-        } catch (IOException ex) {
-            System.err.println("❌ SendGrid error: " + ex.getMessage());
+            resend.emails().send(request);
+            System.out.println("✅ Password reset email sent via Resend");
+        } catch (ResendException e) {
+            System.err.println("❌ Resend error: " + e.getMessage());
         }
     }
     
@@ -118,23 +112,19 @@ public class EmailService {
             "<br/><p>Best regards,<br/>SJC Supply Team</p></div>",
             name
         );
-        
-        Email from = new Email(fromEmail);
-        Email to = new Email(toEmail);
-        Content content = new Content("text/html", htmlContent);
-        Mail mail = new Mail(from, "🔐 Password Changed Successfully", to, content);
 
-        SendGrid sg = new SendGrid(apiKey);
-        Request request = new Request();
-        
+        SendEmailRequest request = SendEmailRequest.builder()
+                .from(fromEmail)
+                .to(toEmail)
+                .subject("🔐 Password Changed Successfully")
+                .html(htmlContent)
+                .build();
+
         try {
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            Response response = sg.api(request);
-            System.out.println("✅ Password changed email sent. Status: " + response.getStatusCode());
-        } catch (IOException ex) {
-            System.err.println("❌ SendGrid error: " + ex.getMessage());
+            resend.emails().send(request);
+            System.out.println("✅ Password changed email sent via Resend");
+        } catch (ResendException e) {
+            System.err.println("❌ Resend error: " + e.getMessage());
         }
     }
     
@@ -161,7 +151,7 @@ public class EmailService {
         );
     }
     
-    // For backward compatibility - keep these method signatures
+    // For backward compatibility
     public void sendOtpEmail(String to, String otp) {
         sendHtmlOtpEmail(to, otp, "OTP");
     }
