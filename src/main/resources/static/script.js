@@ -529,9 +529,9 @@ function redirectToDashboard() {
 
 // ==================== EVENT HANDLERS ====================
 const handlers = {
-    // ⭐⭐⭐ FIXED LOGIN HANDLER - WITH e.preventDefault() ⭐⭐⭐
+    // ✅ FIXED LOGIN HANDLER - REMOVED REMEMBER ME CONDITION
     login: async (e) => {
-        // ✅ ITO ANG PINAKAIMPORTANTE - PINIPIGIL ANG PAGE REFRESH AT 405 ERROR
+        // Prevent page refresh and 405 error
         e.preventDefault();
         e.stopPropagation();
         
@@ -539,23 +539,24 @@ const handlers = {
         
         const email = elements.loginEmail.value;
         const password = elements.loginPassword.value;
-        const rememberMe = elements.rememberMe?.checked;
+        // Remember me is optional - no longer required
+        const rememberMe = elements.rememberMe?.checked || false;
         
-        if (!rememberMe) {
-            utils.showToast('Please check "Remember Me" to login', 'warning');
-            return;
-        }
+        console.log('📝 Login attempt:', { email, rememberMe: rememberMe ? 'Yes' : 'No' });
         
+        // Email validation
         if (!utils.validateEmail(email)) {
             utils.showToast('Invalid email address', 'error');
             return;
         }
         
+        // PHINMA email validation
         if (!utils.validatePhinmaEmail(email)) {
             utils.showToast('Only @phinmaed.com emails allowed', 'error');
             return;
         }
         
+        // Password validation
         if (!password || password.length < 6) {
             utils.showToast('Password must be at least 6 characters', 'error');
             return;
@@ -581,6 +582,7 @@ const handlers = {
             if (response.ok && data.success) {
                 utils.showToast('✅ Login successful!', 'success');
                 
+                // Save user info
                 localStorage.setItem('savedEmail', email);
                 localStorage.setItem('userEmail', data.email || email);
                 if (data.userId) localStorage.setItem('userId', data.userId);
@@ -588,6 +590,7 @@ const handlers = {
                 if (data.name) localStorage.setItem('userName', data.name);
                 if (data.token) localStorage.setItem('token', data.token);
                 
+                // Redirect to dashboard after short delay
                 setTimeout(() => {
                     redirectToDashboard();
                 }, 500);
@@ -601,7 +604,7 @@ const handlers = {
             }
         } catch (error) {
             console.error('❌ Login error:', error);
-            utils.showToast('❌ Network error', 'error');
+            utils.showToast('❌ Network error. Please check your connection.', 'error');
         } finally {
             if (submitBtn) {
                 submitBtn.disabled = false;
@@ -808,7 +811,7 @@ function initializeEventListeners() {
         });
     }
     
-    // ⭐⭐⭐ FIXED - SIGURADING MAY e.preventDefault() ANG LOGIN FORM ⭐⭐⭐
+    // ✅ FIXED LOGIN FORM EVENT LISTENER
     if (elements.loginForm) {
         // Remove any existing listeners to prevent duplicates
         const newLoginForm = elements.loginForm.cloneNode(true);
