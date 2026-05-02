@@ -1,5 +1,12 @@
-// ==================== CONFIGURATION ====================
-const API_BASE_URL = 'http://localhost:8080/api/admin';
+// ============================================
+// API Configuration - FOR RAILWAY (FIXED)
+// ============================================
+const API_BASE_URL = window.location.protocol + '//' + window.location.hostname + '/api/admin';
+
+console.log('🔧 API_BASE_URL:', API_BASE_URL);
+console.log('🌐 Current Host:', window.location.hostname);
+
+// The rest of your admin login code...
 
 // DOM Elements
 const splashScreen = document.querySelector('.splash');
