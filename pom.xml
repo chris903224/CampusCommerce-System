@@ -17,16 +17,17 @@
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>backend</name>
-    <description>SJC Supply Backend with Email OTP</description>
+    <description>SJC Supply Backend with Nylas Email API</description>
     <packaging>jar</packaging>
     
     <properties>
         <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <jjwt.version>0.12.6</jjwt.version>
         <okhttp.version>4.12.0</okhttp.version>
         <springdoc.version>2.2.0</springdoc.version>
         <lombok.version>1.18.30</lombok.version>
-        <nylas.version>2.0.0</nylas.version>
     </properties>
     
     <dependencies>
@@ -46,12 +47,7 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         
-        <!-- ✅ NYLAS EMAIL API -->
-        <dependency>
-            <groupId>com.nylas.sdk</groupId>
-            <artifactId>nylas-java-sdk</artifactId>
-            <version>${nylas.version}</version>
-        </dependency>
+        <!-- ✅ NO NYLAS SDK - Using RestTemplate directly -->
         
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -102,7 +98,7 @@
             <scope>runtime</scope>
         </dependency>
         
-        <!-- OkHttp -->
+        <!-- OkHttp for PayMongo -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
@@ -129,7 +125,7 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
         
-        <!-- Test -->
+        <!-- Test Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
