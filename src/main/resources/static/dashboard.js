@@ -1,32 +1,44 @@
-        // ============================================
-        // DASHBOARD.JS - COMPLETE FIXED VERSION
-        // ============================================
+        /// ============================================
+// DASHBOARD.JS - COMPLETE FIXED VERSION
+// ============================================
 
-        // ============================================
-        // ENSURE TOKEN IS INCLUDED IN ALL REQUESTS
-        // ============================================
+// ============================================
+// API Configuration - SAME AS LOGIN.JS
+// ============================================
+const isNgrok = window.location.hostname.includes('ngrok-free.dev');
+const isRailway = window.location.hostname.includes('up.railway.app');
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-        // Get token from localStorage or URL parameter
-        let token = localStorage.getItem('authToken') || 'bypass-token';
-        let userRole = localStorage.getItem('userRole') || 'USER';
+let API_BASE_URL;
 
-        // Get userId from localStorage (set during login)
-        let userId = localStorage.getItem('userId') || null;
+if (isRailway) {
+    API_BASE_URL = 'https://' + window.location.hostname;
+} else if (isLocalhost) {
+    API_BASE_URL = 'http://localhost:8080';
+} else if (isNgrok) {
+    API_BASE_URL = '/api';
+} else {
+    API_BASE_URL = '/api';
+}
 
-        console.log('🔐 Auth initialized');
-        console.log('👤 User Role:', userRole);
-        console.log('🆔 User ID:', userId);
+console.log('🔧 API_BASE_URL:', API_BASE_URL);
+console.log('🌐 Host:', window.location.hostname);
+console.log('📡 Mode:', isRailway ? 'Railway (Production)' : (isLocalhost ? 'Local' : (isNgrok ? 'Ngrok' : 'Unknown')));
 
-        // ============================================
-        // API Configuration
-        // ============================================
-        const isNgrok = window.location.hostname.includes('ngrok-free.dev');
-        const API_BASE_URL = isNgrok 
-            ? 'https://localhost:8080/api'
-            : '/api';
+// ============================================
+// ENSURE TOKEN IS INCLUDED IN ALL REQUESTS
+// ============================================
 
-        console.log('🔧 API_BASE_URL:', API_BASE_URL);
-        console.log('🌐 Current Host:', window.location.hostname);
+// Get token from localStorage or URL parameter
+let token = localStorage.getItem('authToken') || 'bypass-token';
+let userRole = localStorage.getItem('userRole') || 'USER';
+
+// Get userId from localStorage (set during login)
+let userId = localStorage.getItem('userId') || null;
+
+console.log('🔐 Auth initialized');
+console.log('👤 User Role:', userRole);
+console.log('🆔 User ID:', userId);
 
         // ============================================
         // Application State
