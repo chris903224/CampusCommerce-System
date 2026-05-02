@@ -32,7 +32,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
         
         RequestCounter counter = requestCounts.computeIfAbsent(key, k -> new RequestCounter());
         
+        System.out.println("🔒 RateLimit - IP: " + clientIp + ", Path: " + path + ", Limit: " + limit);
+        
         if (!counter.allowRequest(limit)) {
+            System.out.println("🚫 Rate limit exceeded for IP: " + clientIp);
             response.setStatus(429);
             response.setContentType("application/json");
             response.getWriter().write("{\"error\":\"Too many requests. Please try again later.\"}");
@@ -45,9 +48,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private String getClientIP(HttpServletRequest request) {
         String xfHeader = request.getHeader("X-Forwarded-For");
         if (xfHeader != null && !xfHeader.isEmpty()) {
-            return xfHeader.split(",")[0];
+            String ip = xfHeader.split(",")[0];
+            System.out.println("📡 X-Forwarded-For IP: " + ip);
+            return ip;
         }
-        return request.getRemoteAddr();
+        String remoteAddr = request.getRemoteAddr();
+        System.out.println("📡 Remote Addr IP: " + remoteAddr);
+        return remoteAddr;
     }
     
     private static class RequestCounter {
@@ -59,9 +66,14 @@ public class RateLimitFilter extends OncePerRequestFilter {
             if (now - windowStart > Duration.ofMinutes(1).toMillis()) {
                 count = 0;
                 windowStart = now;
+                System.out.println("🔄 Rate limit window reset");
             }
-            if (count >= maxRequests) return false;
+            if (count >= maxRequests) {
+                System.out.println("⚠️ Request denied. Count: " + count + "/" + maxRequests);
+                return false;
+            }
             count++;
+            System.out.println("✅ Request allowed. Count: " + count + "/" + maxRequests);
             return true;
         }
     }
