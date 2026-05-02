@@ -47,9 +47,13 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         
+        <!-- ❌ REMOVED spring-boot-starter-mail - replaced by SendGrid -->
+        
+        <!-- ✅ SENDGRID EMAIL API (Replaces SMTP) -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>4.10.2</version>
         </dependency>
         
         <dependency>
