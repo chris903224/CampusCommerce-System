@@ -1,32 +1,22 @@
-        // ============================================
-        // DASHBOARD.JS - COMPLETE FIXED VERSION
-        // ============================================
+// Get token from localStorage or URL parameter
+let token = localStorage.getItem('authToken') || 'bypass-token';
+let userRole = localStorage.getItem('userRole') || 'USER';
 
-        // ============================================
-        // ENSURE TOKEN IS INCLUDED IN ALL REQUESTS
-        // ============================================
+// Get userId from localStorage (set during login)
+let userId = localStorage.getItem('userId') || null;
 
-        // Get token from localStorage or URL parameter
-        let token = localStorage.getItem('authToken') || 'bypass-token';
-        let userRole = localStorage.getItem('userRole') || 'USER';
+console.log('🔐 Auth initialized');
+console.log('👤 User Role:', userRole);
+console.log('🆔 User ID:', userId);
 
-        // Get userId from localStorage (set during login)
-        let userId = localStorage.getItem('userId') || null;
+// ============================================
+// API Configuration - FOR RAILWAY (FIXED)
+// ============================================
+// Simple: Gamitin ang current hostname para sa API calls
+const API_BASE_URL = window.location.protocol + '//' + window.location.hostname + '/api';
 
-        console.log('🔐 Auth initialized');
-        console.log('👤 User Role:', userRole);
-        console.log('🆔 User ID:', userId);
-
-        // ============================================
-        // API Configuration
-        // ============================================
-        const isNgrok = window.location.hostname.includes('ngrok-free.dev');
-        const API_BASE_URL = isNgrok 
-            ? 'https://localhost:8080/api'
-            : '/api';
-
-        console.log('🔧 API_BASE_URL:', API_BASE_URL);
-        console.log('🌐 Current Host:', window.location.hostname);
+console.log('🔧 API_BASE_URL:', API_BASE_URL);
+console.log('🌐 Current Host:', window.location.hostname); ganyan code ba dapat? instead of link na gagamitin
 
         // ============================================
         // Application State
