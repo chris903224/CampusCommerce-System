@@ -1,7 +1,11 @@
-// ==================== API CONFIGURATION ====================
-// Detect if running on ngrok or localhost
-const isNgrok = window.location.hostname.includes('ngrok-free.dev');
-const API_BASE_URL = '/api';
+// ============================================
+// API Configuration - FOR RAILWAY (FIXED)
+// ============================================
+// Gamitin ang current hostname para sa API calls
+const API_BASE_URL = window.location.protocol + '//' + window.location.hostname + '/api';
+
+console.log('🔧 API_BASE_URL:', API_BASE_URL);
+console.log('🌐 Current Host:', window.location.hostname);
 
 console.log('🔧 API_BASE_URL:', API_BASE_URL);
 console.log('🌐 Host:', window.location.hostname);
