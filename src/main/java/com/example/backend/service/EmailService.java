@@ -1,43 +1,155 @@
 package com.example.backend.service;
 
-import com.resend.Resend;
-import com.resend.core.exception.ResendException;
-import com.resend.services.emails.model.SendEmailRequest;
+import com.nylas.NylasClient;
+import com.nylas.models.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class EmailService {
 
-    @Value("${resend.api.key}")
+    @Value("${nylas.api.key}")
     private String apiKey;
+    
+    @Value("${mail.from:noreply@sjcsupplies.nylas.email}")
+    private String fromEmail;
+    
+    @Value("${mail.from.name:SJC Supplies}")
+    private String fromName;
 
-    /**
-     * Sends an OTP email using the Resend API.
-     * @param toEmail The recipient's email address.
-     * @param otpCode The one-time password code.
-     */
-    public void sendOtpEmail(String toEmail, String otpCode) {
-        // Initialize the Resend client with your API key
-        Resend resend = new Resend(apiKey);
+    private NylasClient nylasClient;
 
-        // Your 'from' address. For testing, use this. For production, use a verified domain.
-        String fromAddress = "onboarding@resend.dev";
+    @PostConstruct
+    public void init() {
+        nylasClient = new NylasClient.Builder(apiKey).build();
+    }
 
-        // Build the email request
-        SendEmailRequest request = SendEmailRequest.builder()
-                .from(fromAddress)
-                .to(toEmail)
-                .subject("Your OTP Code")
-                .html("<p>Your OTP code is: <strong>" + otpCode + "</strong></p>")
-                .build();
-
+    public void sendHtmlOtpEmail(String toEmail, String otpCode, String purpose) {
         try {
-            resend.emails().send(request);
-            System.out.println("✅ OTP email sent successfully to: " + toEmail);
-        } catch (ResendException e) {
-            // Log the error. The email will also appear in the Railway logs.
-            System.err.println("❌ Failed to send OTP to " + toEmail + ": " + e.getMessage());
+            String subject = getSubject(purpose);
+            String htmlContent = getOtpHtmlTemplate(otpCode, purpose);
+            
+            SendEmailRequest request = new SendEmailRequest.Builder()
+                .from(fromEmail, fromName)
+                .to(toEmail)
+                .subject(subject)
+                .htmlBody(htmlContent)
+                .build();
+            
+            SendMessageResponse response = nylasClient.messages().send(request);
+            System.out.println("✅ OTP Email sent via Nylas to: " + toEmail);
+            
+        } catch (Exception e) {
+            System.err.println("❌ Nylas error: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+    
+    public void sendWelcomeEmail(String toEmail, String name) {
+        String htmlContent = String.format(
+            "<div style='font-family: Arial, sans-serif; padding: 20px;'>" +
+            "<h2 style='color: #4F46E5;'>Welcome to SJC Supply Hub!</h2>" +
+            "<p>Hello <strong>%s</strong>,</p>" +
+            "<p>Your account has been successfully verified.</p>" +
+            "<p>You can now login and start ordering school supplies.</p>" +
+            "</div>",
+            name
+        );
+        
+        try {
+            SendEmailRequest request = new SendEmailRequest.Builder()
+                .from(fromEmail, fromName)
+                .to(toEmail)
+                .subject("Welcome to SJC Supply Hub!")
+                .htmlBody(htmlContent)
+                .build();
+            
+            nylasClient.messages().send(request);
+            System.out.println("✅ Welcome email sent to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("❌ Nylas error: " + e.getMessage());
+        }
+    }
+    
+    public void sendPasswordResetEmail(String toEmail, String otpCode, String name) {
+        String htmlContent = String.format(
+            "<div style='font-family: Arial, sans-serif; padding: 20px;'>" +
+            "<h2 style='color: #4F46E5;'>Password Reset Request</h2>" +
+            "<p>Hello <strong>%s</strong>,</p>" +
+            "<p>Your OTP code for password reset is: <strong>%s</strong></p>" +
+            "<p>This code will expire in 5 minutes.</p>" +
+            "</div>",
+            name, otpCode
+        );
+        
+        try {
+            SendEmailRequest request = new SendEmailRequest.Builder()
+                .from(fromEmail, fromName)
+                .to(toEmail)
+                .subject("Password Reset Request")
+                .htmlBody(htmlContent)
+                .build();
+            
+            nylasClient.messages().send(request);
+            System.out.println("✅ Password reset email sent to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("❌ Nylas error: " + e.getMessage());
+        }
+    }
+    
+    public void sendPasswordChangedEmail(String toEmail, String name) {
+        String htmlContent = String.format(
+            "<div style='font-family: Arial, sans-serif; padding: 20px;'>" +
+            "<h2 style='color: #4F46E5;'>Password Changed Successfully</h2>" +
+            "<p>Hello <strong>%s</strong>,</p>" +
+            "<p>Your password has been successfully changed.</p>" +
+            "</div>",
+            name
+        );
+        
+        try {
+            SendEmailRequest request = new SendEmailRequest.Builder()
+                .from(fromEmail, fromName)
+                .to(toEmail)
+                .subject("Password Changed Successfully")
+                .htmlBody(htmlContent)
+                .build();
+            
+            nylasClient.messages().send(request);
+            System.out.println("✅ Password changed email sent to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("❌ Nylas error: " + e.getMessage());
+        }
+    }
+    
+    private String getSubject(String purpose) {
+        if ("REGISTRATION".equals(purpose)) {
+            return "Verify Your Email - SJC Supply Hub";
+        } else if ("PASSWORD_RESET".equals(purpose)) {
+            return "Password Reset Request - SJC Supply Hub";
+        }
+        return "Your OTP Code - SJC Supply Hub";
+    }
+    
+    private String getOtpHtmlTemplate(String otpCode, String purpose) {
+        return String.format(
+            "<div style='font-family: Arial, sans-serif; padding: 20px;'>" +
+            "<h2 style='color: #4F46E5;'>SJC Supply Hub</h2>" +
+            "<p>Your OTP verification code is:</p>" +
+            "<h1 style='font-size: 36px; color: #4F46E5; letter-spacing: 5px;'>%s</h1>" +
+            "<p>This code will expire in <strong>5 minutes</strong>.</p>" +
+            "</div>",
+            otpCode
+        );
+    }
+    
+    // Backward compatibility
+    public void sendOtpEmail(String to, String otp) {
+        sendHtmlOtpEmail(to, otp, "OTP");
+    }
+    
+    public void sendRegistrationOtpEmail(String to, String otp) {
+        sendHtmlOtpEmail(to, otp, "REGISTRATION");
     }
 }
